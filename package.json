@@ -1,0 +1,19 @@
+{
+  "name": "nko3-risky-rocky-robots",
+  "version": "0.0.0",
+  "description": "Risky Rocky Robots",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nko3/risky-rocky-robots.git"
+  },
+  "dependencies": {
+  },
+  "engines": {
+    "node": "0.8.x"
+  },
+  "subdomain": "risky-rocky-robots.nko3"
+}
