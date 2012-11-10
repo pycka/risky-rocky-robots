@@ -4,8 +4,7 @@
 (function (global) {
 
   var common = {
-    HELLO:           'hell',
-    USER:            'usr',
+    USER_REGISTER:   'usr',
     USER_DENY:       'usr_deny',
     USER_ACCEPT:     'usr_acpt',
     LOBBY_UPDATE:    'lob_up',

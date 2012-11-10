@@ -42,8 +42,6 @@ var net = require('./public/js/net/common.js');
 
 io = io.listen(server, { log: false });
 io.sockets.on('connection', function (socket) {
-  socket.emit(net.HELLO, { msg: 'Witaj' });
-  console.log(net.REGISTER);
 
   socket.on(net.REGISTER, function (data) {
     console.log(net.REGISTER, data);
