@@ -6,14 +6,16 @@
   "scripts": {
     "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:nko3/risky-rocky-robots.git"
-  },
   "dependencies": {
+    "express": "3.0.1",
+    "jade": "*",
+    "stylus": "*"
   },
   "engines": {
     "node": "0.8.x"
   },
-  "subdomain": "risky-rocky-robots.nko3"
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nko3/risky-rocky-robots.git"
+  },
 }
