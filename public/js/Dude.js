@@ -6,7 +6,7 @@ var Dude = (function (window, undefined) {
     this.y = y;
     this.dir = dir;
     this.sword = 0;
-    this.shield = 0;
+    this.shield = 1;
   }
 
   function oval (context, x, y) {
@@ -33,6 +33,39 @@ var Dude = (function (window, undefined) {
     oval(context, 12, 12);
     context.fill();
     context.stroke();
+    context.translate(0, 5);
+  };
+
+  var sword_max = - 3 * Math.PI / 4;
+
+  Dude.prototype.draw_sword = function (context) {
+    context.rotate(sword_max * this.sword);
+    context.translate(23, -5);
+    var gradient = context.createLinearGradient(0, 0, 0, 13);
+    gradient.addColorStop(0, '#ddd');
+    gradient.addColorStop(1, '#999');
+    context.fillStyle = gradient;
+    context.beginPath();
+    context.moveTo(0, 0);
+    context.arcTo(60, 0, 60, 7, 13);
+    context.lineTo(0, 10);
+    context.lineTo(0, 0);
+    context.fill();
+    context.stroke();
+  };
+
+  var shield_max = Math.PI / 2;
+
+  Dude.prototype.draw_shield = function (context) {
+    context.rotate(shield_max * this.shield);
+    context.translate(-23, 0);
+    context.fillStyle = '#7c5b2b'
+    context.beginPath();
+    context.moveTo(0, -30);
+    context.arcTo(-20, 0, 0, 30, 56);
+    context.lineTo(0, -30);
+    context.fill();
+    context.stroke();
   };
 
   Dude.prototype.draw = function (context) {
@@ -40,6 +73,10 @@ var Dude = (function (window, undefined) {
     context.rotate(this.dir);
     this.draw_body(context);
     this.draw_head(context);
+    context.save();
+    this.draw_sword(context);
+    context.restore();
+    this.draw_shield(context);
   };
 
   return Dude;

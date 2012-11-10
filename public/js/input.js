@@ -15,7 +15,6 @@ var input = (function (window, document, undefined) {
 
       var prop;
       prop = event.button === 0 ? 'fight' : event.button === 2 ? 'dodge' : null;
-      console.log(prop);
       if (prop) {
         state[prop] = value;
       }
@@ -40,8 +39,6 @@ var input = (function (window, document, undefined) {
 
   function alternator (state, value) {
     return function (event) {
-      event.preventDefault();
-
       var dir = direction(event.keyCode);
       if (dir) {
         state[dir] = value;
