@@ -1,14 +1,4 @@
 var SceneManager = (function (window, document, undefined) {
-  function calc_size (w, h, W, H) {
-    var R, r;
-    r = w / h;
-    R = W / H;
-    if (r < R) {
-      return [H * r, H];
-    } else {
-      return [W, W / r];
-    }
-  }
 
   function resize (canvas) {
     var r = canvas.width / canvas.height;
@@ -27,6 +17,7 @@ var SceneManager = (function (window, document, undefined) {
       }
       canvas.style.width = w + 'px';
       canvas.style.height = h  + 'px';
+      canvas.scale = w / canvas.width;
     };
   }
 
@@ -39,6 +30,7 @@ var SceneManager = (function (window, document, undefined) {
     }
 
     window.onresize = resize(canvas);
+    window.onresize();
   }
 
   SceneManager.prototype.addDude = function (dude) {

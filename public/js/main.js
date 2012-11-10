@@ -9,6 +9,16 @@
   ];
 
   var scene_manager = new SceneManager(canvas, dudes);
-  scene_manager.redraw();
+
+  var input_state = input(canvas, dudes[0]);
+  var status_div = document.getElementById('status');
+
+  function update () {
+    status_div.innerHTML = JSON.stringify(input_state);
+    scene_manager.redraw();
+    webkitRequestAnimationFrame(update);
+  }
+
+  update();
 
 })(window, document);
