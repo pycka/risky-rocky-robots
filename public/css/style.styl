@@ -8,15 +8,20 @@ a
 
 #game
   display block
-  margin auto
+  margin  auto
 
 #lobby
-  width 80%
-  height 80%
+  width   80%
+  height  90%
 
   position absolute
-  top 5%
-  left 10%
+  top      5%
+  left     10%
 
-  background rgba(0,0,0,95%)
+  background    rgba(0,0,0,95%)
   border-radius 10px
+  opacity       0
+  -webkit-transition  opacity 0.5s ease-out
+
+#lobby.show
+  opacity       1
