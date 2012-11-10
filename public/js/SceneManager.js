@@ -56,6 +56,19 @@ var SceneManager = (function (window, document, undefined) {
     this.drawDudes();
   };
 
+  SceneManager.prototype.update = function (updates) {
+    var update, dude;
+    for (var i = 0; i < updates.length && i < this.dudes.length; ++i) {
+      update = updates[i];
+      dude = this.dudes[i];
+      for (prop in update) {
+        if (update.hasOwnProperty(prop)) {
+          dude[prop] = update[prop];
+        }
+      }
+    }
+  };
+
   SceneManager.prototype.drawBackground = function () {
     this.context.fillStyle = '#ddd'
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
