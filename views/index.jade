@@ -1,4 +1,7 @@
 extends layout
 
+append head
+  script(src='/js/lib/box2d.js', type='text/javascript')
+
 block content
   canvas#game(width=640, height=480)
