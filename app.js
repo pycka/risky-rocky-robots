@@ -7,7 +7,8 @@ var express = require('express')
   , routes = require('./routes')
   , http = require('http')
   , path = require('path')
-  , io = require('socket.io');
+  , io = require('socket.io')
+  , game = require('./game/server');
 
 var app = express();
 
@@ -38,12 +39,6 @@ server.listen(app.get('port'), function(){
 });
 
 // Socket.IO:
-var net = require('./public/js/net/common.js');
-
 io = io.listen(server, { log: false });
-io.sockets.on('connection', function (socket) {
+io.sockets.on('connection', game.onClientConnect);
 
-  socket.on(net.REGISTER, function (data) {
-    console.log(net.REGISTER, data);
-  });
-});

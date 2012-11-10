@@ -1,4 +1,5 @@
 var user = {
   name: 'Default',
-  color: 'yellow'
+  color: 'yellow',
+  socket: null
 };

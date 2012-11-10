@@ -1,4 +1,4 @@
-var game = (function (net) {
+var game = (function (net, user) {
 
   var game = {};
   var conn = net.connection;
@@ -23,7 +23,7 @@ var game = (function (net) {
    * Get user data (name & color).
    */
   game.bootstrapUser = function () {
-    conn.bind('USER_ACCEPT', game.loadLobby);
+    conn.bind('USER_ACCEPT', game.lobby.init);
     conn.bind('USER_DENY', function () {
       alert('Denied, try with other name.');
       game.configureUser();
@@ -33,17 +33,65 @@ var game = (function (net) {
   };
 
   game.configureUser = function () {
-    user.name = prompt('name') || 'Default User Name';
-    user.color = prompt('color') || 'magenta';
+    user.name = prompt('Player name (required)');
 
-    conn.registerUser(user);
+    if (user.name) {
+      user.color = prompt('Player color (optional)') || 'pink';
+      conn.registerUser(user);
+    }
   };
 
   /**
    *
    */
-  game.loadLobby = function () {
+  game.lobby = {
+    elLobby:        null,
+    elPlayerInfo:   null,
+    elLobbyStatus:  null,
 
+    /**
+     * @context {SocketNamespace}
+     */
+    init: function () {
+      var that = game.lobby;
+
+      that.elLobby = document.getElementById('lobby');
+      that.elPlayerInfo = document.getElementById('lobby_player');
+      that.elLobbyStatus = document.getElementById('lobby_status');
+
+      that.elPlayerInfo.innerHTML = user.name;
+      that.elPlayerInfo.style.color = user.color;
+      that.show();
+
+      conn.socket.on(net.common.LOBBY_UPDATE, that.update);
+    },
+
+    show: function () {
+      this.elLobby.className = 'shown';
+    },
+
+    hide: function () {
+      this.elLobby.className = '';
+    },
+
+    /**
+     * @param   {Object}  data
+     * @context {Undefined}
+     */
+    update: function (data) {
+      var lobby = game.lobby;
+
+      lobby.elLobbyStatus.innerHTML = 'Players: ' + data.userCount;
+      lobby.updateArenas();
+    },
+
+    updateArenas: function () {
+
+    },
+
+    updateChat: function () {
+
+    }
   };
 
   /**
@@ -54,6 +102,6 @@ var game = (function (net) {
   };
 
   return game;
-})(net);
+})(net, user);
 
 game.bootstrap();

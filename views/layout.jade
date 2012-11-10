@@ -8,6 +8,14 @@ html
     block content
 
     div(id='lobby')
-      div(id='status')
-      div(id='arenas')
-      div(id='chat')
+      div(id='lobby_win')
+        div(class='statusbar')
+          div(id='lobby_player')
+          div(id='lobby_status')
+          a(id='about', href='#', class='button')= 'About'
+        ul(id='lobby_arenas')
+        div(id='lobby_chat')
+          ul(id='lobby_chat_messages')
+          form(id='lobby_chat_form')
+            input(type='text')
+            button(value='Send', class='button')
