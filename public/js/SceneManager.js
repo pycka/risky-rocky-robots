@@ -1,5 +1,7 @@
 var SceneManager = (function (window, document, undefined) {
   function SceneManager (canvas, dudes) {
+    this.dudes = dudes || [];
+
     this.context = canvas.getContext('2d');
     if (!this.context) {
       throw new Error("Can't get a 2d context.");
@@ -8,7 +10,6 @@ var SceneManager = (function (window, document, undefined) {
     // rotate coords for Box2D compatibility
     this.context.scale(1, -1);
     this.context.translate(0, -canvas.height);
-    this.dudes = dudes || [];
   }
 
   SceneManager.prototype.addDude = function (dude) {
@@ -26,7 +27,11 @@ var SceneManager = (function (window, document, undefined) {
   };
 
   SceneManager.prototype.drawDudes = function () {
-
+    for (var i = 0; i < this.dudes.length; ++i) {
+      this.context.save();
+      this.dudes[i].draw(this.context);
+      this.context.restore();
+    }
   };
 
   return SceneManager;
