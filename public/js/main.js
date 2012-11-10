@@ -14,10 +14,8 @@
   var b2_scene = new Box2dScene(dudes, debug_canvas);
 
   var input_state = input(canvas, dudes[0]);
-  var status_div = document.getElementById('status');
 
   function update () {
-    status_div.innerHTML = JSON.stringify(input_state);
     scene_manager.redraw();
     // webkitRequestAnimationFrame(update);
   }
