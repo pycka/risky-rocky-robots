@@ -19,7 +19,7 @@
     },
 
     bind: function (evname, callback) {
-      this.socket.on(evname, callback);
+      this.socket.on(common[evname], callback);
     },
 
     /**
@@ -34,4 +34,4 @@
 })(io, this);
 
 // Temporarily
-net.connection.init('http://localhost/');
+
