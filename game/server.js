@@ -10,8 +10,32 @@ var lobby = {
 
   state: {
     userCount: 0,
-    arenas: {
+    arenas:    null
+  },
 
+  arena: {
+    register: function (arenaName, socket) {
+      if (!lobby.arenas[arenaName]) {
+        var user = lobby.usersBySid[socket.id];
+        var arena = lobby.arena.create(arenaName, user);
+        lobby.arenas[arenaName] = arena;
+
+        return true;
+      }
+
+      return false;
+    },
+
+    create: function (arenaName, user) {
+      var arena = {
+        id:       lobby.arenaNextId++,
+        name:     arenaName,
+        owner:    user.name,
+        players:  0,
+        max:      1
+      };
+
+      return arena;
     }
   },
 
@@ -57,12 +81,29 @@ var lobby = {
   notify: function () {
     var state = this.state;
     state.userCount = Object.keys(this.usersByName).length;
+    state.arenas = lobby.arenas;
 
     game.net.broadcast(net.LOBBY_UPDATE, state);
   }
 };
 
 var game = {
+
+  arena: {
+    initSocket: function (socket) {
+       socket.on(net.ARENA_CREATE, function (arenaName) {
+        if (lobby.arena.register(arenaName, socket)) {
+          console.log('arena accepted', arenaName);
+          // socket.emit(net.ARENA_CREATE, 'Arena created');
+          lobby.notify();
+        }
+        else {
+          console.log('arena denied');
+          socket.emit(net.ARENA_DENY, 'Name alrady taken.');
+        }
+      });
+    }
+  },
 
   net: {
     broadcast: function (ev, data) {
@@ -98,6 +139,7 @@ function onClientConnect (socket) {
 
   // bind essential listeners
   game.user.initSocket(socket);
+  game.arena.initSocket(socket);
   socket.on('disconnect', function () {
     lobby.user.unregisterBySocketId(socketId);
   });

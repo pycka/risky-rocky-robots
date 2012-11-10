@@ -15,7 +15,6 @@
     init: function (url) {
       this.socket = io.connect(url);
 
-
     },
 
     bind: function (evname, callback) {
@@ -27,8 +26,14 @@
      */
     registerUser: function (user) {
       this.socket.emit(common.USER_REGISTER, user);
-    }
+    },
 
+    /**
+     *
+     */
+    registerArena: function (name) {
+      this.socket.emit(common.ARENA_CREATE, name);
+    }
   };
 
 })(io, this);
