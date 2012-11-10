@@ -60,8 +60,8 @@ var input = (function (window, document, undefined) {
     window.onkeydown = alternator(state, true);
     window.onkeyup = alternator(state, false);
 
-    window.onmousedown = mouse_action(state, true);
-    window.onmouseup = mouse_action(state, false);
+    canvas.onmousedown = mouse_action(state, true);
+    canvas.onmouseup = mouse_action(state, false);
 
     canvas.onmousemove = angle(state, canvas, dude);
     canvas.oncontextmenu = function (event) { event.preventDefault(); };

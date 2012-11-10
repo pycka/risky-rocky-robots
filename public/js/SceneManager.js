@@ -21,15 +21,29 @@ var SceneManager = (function (window, document, undefined) {
     };
   }
 
-  function SceneManager (canvas, dudes) {
+  function SceneManager (canvas, dudes, debug) {
     this.dudes = dudes || [];
+    this.debug = debug;
 
     this.context = canvas.getContext('2d');
     if (!this.context) {
       throw new Error("Can't get a 2d context.");
     }
 
-    window.onresize = resize(canvas);
+    var resize_canvas = resize(canvas);
+
+    if(debug) {
+      var resize_debug = resize(debug);
+    }
+
+    window.onresize = function (event) {
+      resize_canvas();
+
+      if (debug) {
+        resize_debug();
+      }
+    };
+
     window.onresize();
   }
 
