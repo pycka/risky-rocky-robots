@@ -17,6 +17,7 @@ var Dude = (function (window, undefined) {
     context.arcTo(x, -y, 0, -y, r);
     context.arcTo(-x, -y, -x, 0, r);
     context.arcTo(-x, y, 0, y, r);
+    context.lineTo(0, y);
   }
 
   Dude.prototype.draw_body = function (context) {
@@ -28,7 +29,7 @@ var Dude = (function (window, undefined) {
 
   Dude.prototype.draw_head = function (context) {
     context.fillStyle = '#ffffcc';
-    context.translate(0, 5);
+    context.translate(0, -5);
     oval(context, 12, 12);
     context.fill();
     context.stroke();
