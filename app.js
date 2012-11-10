@@ -38,10 +38,14 @@ server.listen(app.get('port'), function(){
 });
 
 // Socket.IO:
+var net = require('./public/js/net/common.js');
+
 io = io.listen(server, { log: false });
 io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log('my other event', data);
+  socket.emit(net.HELLO, { msg: 'Witaj' });
+  console.log(net.REGISTER);
+
+  socket.on(net.REGISTER, function (data) {
+    console.log(net.REGISTER, data);
   });
 });
