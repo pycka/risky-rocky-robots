@@ -26,7 +26,7 @@
      * @param {Object} user
      */
     registerUser: function (user) {
-      this.socket.emit(common.REGISTER, user);
+      this.socket.emit(common.USER_REGISTER, user);
     }
 
   };
