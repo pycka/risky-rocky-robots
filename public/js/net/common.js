@@ -4,21 +4,20 @@
 (function (global) {
 
   var common = {
-    USER_REGISTER:   'usr',
-    USER_DENY:       'usr_deny',
-    USER_ACCEPT:     'usr_acpt',
-    LOBBY_UPDATE:    'lob_up',
+    USER_REGISTER:   'usr',         // client ==> server
+    USER_DENY:       'usr_deny',    // client <== server
+    USER_ACCEPT:     'usr_acpt',    // client <== server
+    LOBBY_UPDATE:    'lob_up',      // client <== server
 
-    CHAT_UPDATE:     'ch_up',
-    CHAT_SAY:        'ch_say',
-    ARENA_CREATE:    'ar_creat',    // (request) client <=> server (accept)
+    ARENA_CREATE:    'ar_creat',    // (req) client <=> server (acc)
     ARENA_ENTER:     'ar_enter',
     ARENA_DENY:      'ar_deny',
     ARENA_ACCEPT:    'ar_accept',
     ARENA_EXIT:      'ar_exit',
     SCENE_UPDATE:    'scene',
     INPUT:           'in',
-    ERROR:           'err'
+    CHAT_UPDATE:     'ch_up',
+    CHAT_SAY:        'ch_say',
   };
 
   // Export for Node:
