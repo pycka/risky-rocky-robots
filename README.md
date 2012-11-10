@@ -10,12 +10,6 @@ git clone git@github.com:nko3/risky-rocky-robots.git
 
 ### Nodejitsu — [More details][5], [Handbook][4]
 
-~~~sh
-npm install -g jitsu
-jitsu login --username nko3-risky-rocky-robots --password QlkEZ/utUhmG3FUG
-jitsu deploy
-~~~
-
 ## Tips
 
 ### Vote KO Widget
