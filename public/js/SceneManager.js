@@ -1,4 +1,35 @@
 var SceneManager = (function (window, document, undefined) {
+  function calc_size (w, h, W, H) {
+    var R, r;
+    r = w / h;
+    R = W / H;
+    if (r < R) {
+      return [H * r, H];
+    } else {
+      return [W, W / r];
+    }
+  }
+
+  function resize (canvas) {
+    var r = canvas.width / canvas.height;
+    var size;
+    return function () {
+      var W, H, w, h, R;
+      W = document.documentElement.clientWidth;
+      H = window.innerHeight;
+      R = W / H;
+      if (r < R) {
+        w = H * r;
+        h = H;
+      } else {
+        w = W;
+        h = W / r;
+      }
+      canvas.style.width = w + 'px';
+      canvas.style.height = h  + 'px';
+    };
+  }
+
   function SceneManager (canvas, dudes) {
     this.dudes = dudes || [];
 
@@ -7,9 +38,7 @@ var SceneManager = (function (window, document, undefined) {
       throw new Error("Can't get a 2d context.");
     }
 
-    // rotate coords for Box2D compatibility
-    this.context.scale(1, -1);
-    this.context.translate(0, -canvas.height);
+    window.onresize = resize(canvas);
   }
 
   SceneManager.prototype.addDude = function (dude) {
