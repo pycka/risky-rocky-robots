@@ -1,12 +1,13 @@
 var Box2dScene = (function (window, document, undefined) {
-  var b2World        = Box2D.Dynamics.b2World;
-  var b2Vec2         = Box2D.Common.Math.b2Vec2;
-  var b2Fixture      = Box2D.Dynamics.b2Fixture;
-  var b2FixtureDef   = Box2D.Dynamics.b2FixtureDef;
-  var b2Body         = Box2D.Dynamics.b2Body;
-  var b2BodyDef      = Box2D.Dynamics.b2BodyDef;
-  var b2DebugDraw    = Box2D.Dynamics.b2DebugDraw;
-  var b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
+  var b2World            = Box2D.Dynamics.b2World;
+  var b2Vec2             = Box2D.Common.Math.b2Vec2;
+  var b2Fixture          = Box2D.Dynamics.b2Fixture;
+  var b2FixtureDef       = Box2D.Dynamics.b2FixtureDef;
+  var b2Body             = Box2D.Dynamics.b2Body;
+  var b2BodyDef          = Box2D.Dynamics.b2BodyDef;
+  var b2DebugDraw        = Box2D.Dynamics.b2DebugDraw;
+  var b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef;
+  var b2PolygonShape     = Box2D.Collision.Shapes.b2PolygonShape;
 
   var SCALE = 32;
 
@@ -75,10 +76,10 @@ var Box2dScene = (function (window, document, undefined) {
   }
 
   function Box2dScene (dudes, canvas) {
-    var dude, body, sword, shield;
+    var dude, body, sword, shield, sword_joint_def, shield_joint_def;
 
     this.context = canvas.getContext('2d');
-    this.world = new b2World(new b2Vec2(1, 0), true);
+    this.world = new b2World(new b2Vec2(0, 0), true);
 
     for (var i = 0; i < dudes.length; ++i) {
       dude = dudes[i];
