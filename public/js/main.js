@@ -13,11 +13,13 @@
 
   var b2_scene = new Box2dScene(dudes, debug_canvas);
 
-  var input_state = input(canvas, dudes[0]);
+  var input_state = input(debug_canvas, dudes[0]);
 
   function update () {
+    b2_scene.update([input_state]);
+    b2_scene.step();
     scene_manager.redraw();
-    // webkitRequestAnimationFrame(update);
+    webkitRequestAnimationFrame(update);
   }
 
   update();

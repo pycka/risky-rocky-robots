@@ -5,6 +5,7 @@ var Box2dScene = (function (window, document, undefined) {
   var b2FixtureDef       = Box2D.Dynamics.b2FixtureDef;
   var b2Body             = Box2D.Dynamics.b2Body;
   var b2BodyDef          = Box2D.Dynamics.b2BodyDef;
+  var b2ContactListener  = Box2D.Dynamics.b2ContactListener;
   var b2DebugDraw        = Box2D.Dynamics.b2DebugDraw;
   var b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef;
   var b2PolygonShape     = Box2D.Collision.Shapes.b2PolygonShape;
@@ -75,11 +76,20 @@ var Box2dScene = (function (window, document, undefined) {
     return body;
   }
 
+  function create_joint (world, body, thing) {
+    joint_def = new b2RevoluteJointDef;
+    joint_def.Initialize(body, thing, body.GetPosition());
+    return world.CreateJoint(joint_def);
+  }
+
   function Box2dScene (dudes, canvas) {
     var dude, body, sword, shield, sword_joint_def, shield_joint_def;
 
     this.context = canvas.getContext('2d');
     this.world = new b2World(new b2Vec2(0, 0), true);
+    this.bodies = [];
+    this.swords = [];
+    this.shields = [];
 
     for (var i = 0; i < dudes.length; ++i) {
       dude = dudes[i];
@@ -87,12 +97,17 @@ var Box2dScene = (function (window, document, undefined) {
       body = create_body(this.world, dude, body_verts);
       sword = create_body(this.world, dude, sword_verts);
       shield = create_body(this.world, dude, shield_verts);
+
+      this.bodies.push(body);
+      this.swords.push(sword);
+      this.shields.push(shield);
+
+      create_joint(this.world, body, sword);
+      create_joint(this.world, body, shield);
     }
 
+    this.step();
     this.setup_drawing();
-    this.world.Step(1/60, 10, 10);
-    this.world.DrawDebugData();
-    this.world.ClearForces();
   }
 
   Box2dScene.prototype.setup_drawing = function () {
@@ -103,6 +118,22 @@ var Box2dScene = (function (window, document, undefined) {
     dd.SetLineThickness(1.0);
     dd.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
     this.world.SetDebugDraw(dd);
+  };
+
+  Box2dScene.prototype.update = function (states) {
+    var state;
+    for (var i = 0; i < states.length; ++i) {
+      state = states[i];
+      this.bodies[i].SetAngle(state.dir);
+      this.swords[i].SetAngle(state.dir);
+      this.shields[i].SetAngle(state.dir);
+    }
+  };
+
+  Box2dScene.prototype.step = function () {
+    this.world.Step(1/60, 10, 10);
+    this.world.DrawDebugData();
+    this.world.ClearForces();
   };
 
   return Box2dScene;
