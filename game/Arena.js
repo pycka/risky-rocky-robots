@@ -77,7 +77,6 @@ Arena.prototype.detach = function (user) {
   this.dudes.splice(index, 1);
 
   this.count--;
-  console.log(index);
   scenes[this.name].removeDude(index);
 
   // recalc index values
