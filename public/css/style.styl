@@ -28,10 +28,13 @@ iframe
 table
   border  0
   width   100%
+  border-collapse collapse
+
 table > thead
   font-weight   bold
   color         red
 td
+  padding       0 2px
   text-align    center
 td:first-child
   text-align    left
@@ -131,3 +134,6 @@ section.statusbar > .status
 
 // Lobby::Arenas
 
+section.arenas tbody > tr:hover
+  background  rgba(20, 20, 20, 0.95);
+  cursor      pointer

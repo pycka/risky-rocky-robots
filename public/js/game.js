@@ -85,7 +85,7 @@ var game = (function (net, user, input) {
       var that = game.lobby;
 
       that.arenaRowTpl = _.template(
-        '<tr>' +
+        '<tr data-arena="<%- name %>">' +
         '<td><%- name %></td>' +
         '<td><%- count %></td>' +
         '<td><%- max %></td>' +
@@ -209,7 +209,15 @@ var game = (function (net, user, input) {
      * @context {DOMElement}
      */
     selectArena: function (event) {
-      var arenaName = event.target.textContent;
+      var arenaName;
+      var target = event.target;
+
+      if (target.nodeName === 'TR') {
+        arenaName = target.getAttribute('data-arena');
+      }
+      else if (target.nodeName === 'TD') {
+        arenaName = target.parentNode.getAttribute('data-arena');
+      }
 
       if (arenaName) {
         conn.socket.emit(net.common.ARENA_ENTER, arenaName);
