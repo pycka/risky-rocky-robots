@@ -26,10 +26,10 @@ var SceneManager = (function (window, document, undefined) {
     this.debug = debug;
 
     this.scores = [
-      {name: 'A', k: 0, d: 0},
-      {name: 'B', k: 0, d: 0},
-      {name: 'C', k: 0, d: 0},
-      {name: 'D', k: 0, d: 0}
+      // {name: 'A', k: 0, d: 0},
+      // {name: 'B', k: 0, d: 0},
+      // {name: 'C', k: 0, d: 0},
+      // {name: 'D', k: 0, d: 0}
     ];
 
     this.context = canvas.getContext('2d');
@@ -83,8 +83,10 @@ var SceneManager = (function (window, document, undefined) {
     }
   };
 
-  SceneManager.prototype.updateScores = function (scores) {
-    this.scores = scores;
+  SceneManager.prototype.updateStats = function (scores) {
+    if (scores) {
+      this.scores = scores;
+    }
   }
 
   SceneManager.prototype.drawBackground = function () {

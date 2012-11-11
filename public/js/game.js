@@ -58,7 +58,8 @@ var game = (function (net, user, input) {
 
   game.canvas = {
     redraw: function (updates) {
-      scene.update(updates);
+      scene.update(updates.coords);
+      scene.updateStats(updates.stats);
       scene.redraw();
     }
   };

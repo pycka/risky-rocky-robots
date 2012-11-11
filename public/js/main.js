@@ -8,9 +8,9 @@
 //     new Dude('yellow', 360, 200, 0)
 //   ];
 
-//   var scene_manager = new SceneManager(canvas, dudes, canvas);
+//   var scene_manager = new SceneManager(canvas, dudes);
 
-//   var b2_scene = new Box2dScene(dudes, canvas);
+//   var b2_scene = new Box2dScene(dudes);
 
 //   var input_state = input(canvas);
 
