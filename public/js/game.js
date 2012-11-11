@@ -115,7 +115,7 @@ var game = (function (net, user, input) {
     update: function (data) {
       var lobby = game.lobby;
 
-      lobby.elLobbyStatus.innerHTML = 'Players: ' + data.userCount;
+      lobby.elLobbyStatus.innerHTML = data.userCount;
       lobby.updateArenas(data.arenas);
     },
 
