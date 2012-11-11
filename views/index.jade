@@ -1,17 +1,35 @@
-extends layout
+doctype 5
+html
+  head
+    block head
+      title= title
+      link(rel='stylesheet', href='/css/style.css')
 
-block content
-  canvas#game(width=640, height=480)
-  script(src='/socket.io/socket.io.js')
-  script(src='/js/lib/underscore.min.js')
-  script(src='/js/lib/box2d.js')
-  script(src='/js/Dude.js')
-  script(src='/js/input.js')
-  script(src='/js/SceneManager.js')
-  script(src='/js/Box2dScene.js')
-  script(src='/js/net/common.js')
-  script(src='/js/net/connection.js')
-  script(src='/js/user.js')
-  script(src='/js/game.js')
-  script(src='/js/main.js')
+  body
+    div(id='lobby')
+      div(class='win')
+        div(class='statusbar')
+          div(id='lobby_player')
+          div(id='lobby_status')
+          a(id='lobby_about', href='#')= 'About'
+
+        div(id='lobby_arenas')
+          table(id='lobby_arenas_tab')
+        div(class='menu')
+          a(href='#', id='lobby_arena_new')= 'New arena'
+
+    canvas#game(width=640, height=480)
+    script(src='/socket.io/socket.io.js')
+    script(src='/js/lib/underscore.min.js')
+    script(src='/js/lib/box2d.js')
+    script(src='/js/Dude.js')
+    script(src='/js/input.js')
+    script(src='/js/SceneManager.js')
+    script(src='/js/Box2dScene.js')
+    script(src='/js/net/common.js')
+    script(src='/js/net/connection.js')
+    script(src='/js/user.js')
+    script(src='/js/game.js')
+    script(src='/js/main.js')
+
 

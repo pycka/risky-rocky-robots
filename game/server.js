@@ -1,23 +1,35 @@
 var net = require('../public/js/net/common');
+var Arena = require('./Arena').Constructor;
 
 var lobby = {
-  // statics
-  usersByName: {},
-  usersBySid: {},
-  arenas: {},
-  arenaNextId: 1,
-  chat: [],
 
+  // statics
+  usersByName:  {},
+  usersBySid:   {},
+  arenas:       {},
   state: {
     userCount: 0,
     arenas:    null
   },
 
+  // methods
+  getArena: function (name) {
+    return this.arenas[name];
+  },
+
+  getUserBySocket: function (socket) {
+    return this.usersBySid[socket.id];
+  },
+
+
+  // subspaces
   arena: {
+
     register: function (arenaName, socket) {
       if (!lobby.arenas[arenaName]) {
-        var user = lobby.usersBySid[socket.id];
-        var arena = lobby.arena.create(arenaName, user);
+        var user = lobby.getUserBySocket(socket);
+        var arena = new Arena(arenaName, user.name);
+
         lobby.arenas[arenaName] = arena;
 
         return true;
@@ -26,16 +38,14 @@ var lobby = {
       return false;
     },
 
-    create: function (arenaName, user) {
-      var arena = {
-        id:       lobby.arenaNextId++,
-        name:     arenaName,
-        owner:    user.name,
-        players:  0,
-        max:      1
-      };
+    enter: function (arenaName, user) {
+      var arena = lobby.getArena(arenaName);
 
-      return arena;
+      return arena && arena.attach(user);
+    },
+
+    exit: function (user, arena) {
+
     }
   },
 
@@ -58,15 +68,15 @@ var lobby = {
     /**
      * Usually invoked by client disconnecting from server.
      */
-    unregisterBySocketId: function (socketId) {
-      var user = lobby.usersBySid[socketId];
+    unregisterBySocket: function (socket) {
+      var user = lobby.getUserBySocket(socket);
 
       if (user) {
         if (user.arena) {
-          // @todo handle  departure from arena
+          user.arena.detach(user);
         }
 
-        delete lobby.usersBySid[socketId];
+        delete lobby.usersBySid[socket.id];
         delete lobby.usersByName[user.name];
 
         lobby.notify();
@@ -91,15 +101,30 @@ var game = {
 
   arena: {
     initSocket: function (socket) {
-       socket.on(net.ARENA_CREATE, function (arenaName) {
+      socket.on(net.ARENA_CREATE, function (arenaName) {
         if (lobby.arena.register(arenaName, socket)) {
-          console.log('arena accepted', arenaName);
-          // socket.emit(net.ARENA_CREATE, 'Arena created');
+          console.log('arena created', arenaName);
           lobby.notify();
         }
         else {
           console.log('arena denied');
           socket.emit(net.ARENA_DENY, 'Name alrady taken.');
+        }
+      });
+
+      socket.on(net.ARENA_ENTER, function (arenaName) {
+        var user = lobby.getUserBySocket(socket);
+        var arena = lobby.getArena(arenaName);
+
+        if (arena && arena.attach(user)) {
+          console.log('arena');
+          console.log(arena);
+          console.log(user.name);
+
+          socket.emit(net.ARENA_ACCEPT);
+        }
+        else {
+          socket.emit(net.ARENA_DENY, 'Arena not found or full.');
         }
       });
     }
@@ -134,14 +159,13 @@ var game = {
 };
 
 function onClientConnect (socket) {
-  var socketId = socket.id;
   console.log('Connected ', socket.id);
 
   // bind essential listeners
   game.user.initSocket(socket);
   game.arena.initSocket(socket);
   socket.on('disconnect', function () {
-    lobby.user.unregisterBySocketId(socketId);
+    lobby.user.unregisterBySocket(socket);
   });
 }
 

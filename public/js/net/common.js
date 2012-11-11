@@ -10,9 +10,9 @@
     LOBBY_UPDATE:    'lob_up',      // client <== server
 
     ARENA_CREATE:    'ar_creat',    // (req) client <=> server (acc)
-    ARENA_ENTER:     'ar_enter',
-    ARENA_DENY:      'ar_deny',
-    ARENA_ACCEPT:    'ar_accept',
+    ARENA_ENTER:     'ar_enter',    // client ==> server
+    ARENA_DENY:      'ar_deny',     // client <== server
+    ARENA_ACCEPT:    'ar_accept',   // client <== server
     ARENA_EXIT:      'ar_exit',
     SCENE_UPDATE:    'scene',
     INPUT:           'in',

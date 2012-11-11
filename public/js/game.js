@@ -6,8 +6,7 @@ var game = (function (net, user) {
   var conn = net.connection;
 
   /**
-   * Establish connection.
-   *
+   * Start init process. Establish connection. Called manually.
    */
   game.bootstrap = function () {
     conn.init(window.location);
@@ -25,7 +24,7 @@ var game = (function (net, user) {
    * Get user data (name & color).
    */
   game.bootstrapUser = function () {
-    conn.bind('USER_ACCEPT', game.lobby.init);
+    conn.bind('USER_ACCEPT', game.lobby.bootstrap);
     conn.bind('USER_DENY', function () {
       alert('Denied, try with other name.');
       game.configureUser();
@@ -57,11 +56,11 @@ var game = (function (net, user) {
     /**
      * @context {SocketNamespace}
      */
-    init: function () {
+    bootstrap: function () {
       var that = game.lobby;
 
-      that.arenaRowTpl = _.template('<tr>' +
-        '<td><%- id %></td>' +
+      that.arenaRowTpl = _.template(
+        '<tr>' +
         '<td><%- name %></td>' +
         '<td><%- players %></td>' +
         '<td><%- max %></td>' +
@@ -74,17 +73,19 @@ var game = (function (net, user) {
       that.elAboutLink = document.getElementById('lobby_about');
       that.elLobbyArenas = document.getElementById('lobby_arenas_tab');
       that.elNewArenaLink = document.getElementById('lobby_arena_new')
-      that.elNewArenaLink.addEventListener('click', that.requestArena, false);
+      that.elNewArenaLink.addEventListener('click', that.createArena, false);
 
       that.elPlayerInfo.innerHTML = user.name;
       that.elPlayerInfo.style.color = user.color;
       that.elAboutLink.addEventListener('click', that.about, false);
+      that.elLobbyArenas.addEventListener('click', that.selectArena, false);
 
       that.show();
 
       conn.socket.on(net.common.LOBBY_UPDATE, that.update);
       conn.socket.on(net.common.ARENA_CREATE, that.alert);
       conn.socket.on(net.common.ARENA_DENY, that.alert);
+      conn.socket.on(net.common.ARENA_ACCEPT, that.enterArena);
     },
 
     show: function () {
@@ -120,15 +121,27 @@ var game = (function (net, user) {
     /**
      * @context {DOMElement}
      */
-    requestArena: function () {
-      name = prompt('Arena name');
+    createArena: function () {
+      var name = prompt('Arena name');
       if (name) {
         conn.registerArena(name);
       }
     },
 
-    updateChat: function () {
+    enterArena: function () {
+      game.lobby.hide();
+    },
 
+    /**
+     * @param   {MouseEvent}
+     * @context {DOMElement}
+     */
+    selectArena: function (event) {
+      var arenaName = event.target.textContent;
+
+      if (arenaName) {
+        conn.socket.emit(net.common.ARENA_ENTER, arenaName);
+      }
     },
 
     /**

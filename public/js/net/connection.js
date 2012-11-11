@@ -33,7 +33,9 @@
      */
     registerArena: function (name) {
       this.socket.emit(common.ARENA_CREATE, name);
-    }
+    },
+
+
   };
 
 })(io, this);
