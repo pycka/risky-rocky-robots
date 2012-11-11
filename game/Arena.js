@@ -1,3 +1,5 @@
+var Box2dScene = require('../public/js/Box2dScene');
+
 /**
  * @param {String} name
  *   Arena's name.

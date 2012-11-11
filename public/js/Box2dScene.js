@@ -1,4 +1,8 @@
-var Box2dScene = (function (window, document, undefined) {
+if (typeof require === 'function') {
+  var Box2D = require('./lib/box2d');
+}
+
+var Box2dScene = (function (undefined) {
   var b2World            = Box2D.Dynamics.b2World;
   var b2Vec2             = Box2D.Common.Math.b2Vec2;
   var b2Fixture          = Box2D.Dynamics.b2Fixture;
@@ -130,7 +134,7 @@ var Box2dScene = (function (window, document, undefined) {
     var dude, body, sword, shield;
 
     this.world = new b2World(new b2Vec2(0, 0), false);
-    this.dudes = dudes;
+    this.dudes = dudes || [];
     this.bodies = [];
     this.swords = [];
     this.shields = [];
@@ -141,22 +145,7 @@ var Box2dScene = (function (window, document, undefined) {
     create_barrier(this.world, 640, 240, 20, 480);
 
     for (var i = 0; i < dudes.length; ++i) {
-      dude = dudes[i];
-
-      body = create_body(this.world, dude, body_verts);
-      sword = create_body(this.world, dude, sword_verts);
-      shield = create_body(this.world, dude, shield_verts);
-
-      body.SetUserData({type: 'body', i: i});
-      sword.SetUserData({type: 'sword', i: i});
-      shield.SetUserData({type: 'shield', i: i});
-
-      this.bodies.push(body);
-      this.swords.push(sword);
-      this.shields.push(shield);
-
-      create_joint(this.world, body, sword);
-      create_joint(this.world, body, shield);
+      this.addDude(dudes[i]);
     }
 
     this.world.SetContactListener(new Detector(this));
@@ -166,6 +155,23 @@ var Box2dScene = (function (window, document, undefined) {
       this.setup_drawing();
     }
     this.step();
+  }
+
+  Box2dScene.prototype.addDude = function (dude) {
+    body = create_body(this.world, dude, body_verts);
+    sword = create_body(this.world, dude, sword_verts);
+    shield = create_body(this.world, dude, shield_verts);
+
+    body.SetUserData({type: 'body', i: i});
+    sword.SetUserData({type: 'sword', i: i});
+    shield.SetUserData({type: 'shield', i: i});
+
+    this.bodies.push(body);
+    this.swords.push(sword);
+    this.shields.push(shield);
+
+    create_joint(this.world, body, sword);
+    create_joint(this.world, body, shield);
   }
 
   Box2dScene.prototype.setup_drawing = function () {
@@ -178,18 +184,33 @@ var Box2dScene = (function (window, document, undefined) {
     this.world.SetDebugDraw(dd);
   };
 
+  Box2dScene.prototype.angle  = function (state, pos) {
+    var dx, dy, dc, dir, sin;
+    dx = state.mouse_x / SCALE - pos.x;
+    dy = state.mouse_y / SCALE - pos.y;
+    dc = Math.sqrt(dx * dx + dy * dy);
+    dir = Math.asin(dy / dc) + Math.PI / 2;
+    if (dx < 0) {
+      dir = -dir;
+    }
+    return dir;
+  }
+
   Box2dScene.prototype.update = function (states) {
-    var state, velocity;
+    var state, velocity, angle;
     for (var i = 0; i < states.length; ++i) {
       state = states[i];
+
+      // No action when both mouse button down
       if (state.fight && state.dodge) {
         state.fight = false;
         state.dodge = false;
       }
 
-      this.bodies[i].SetAngle(state.dir);
-      this.swords[i].SetAngle(state.dir + state.fight * SWORD_MAX);
-      this.shields[i].SetAngle(state.dir + state.dodge * SHIELD_MAX);
+      angle = this.angle(state, this.bodies[i].GetPosition());
+      this.bodies[i].SetAngle(angle);
+      this.swords[i].SetAngle(angle + state.fight * SWORD_MAX);
+      this.shields[i].SetAngle(angle + state.dodge * SHIELD_MAX);
       velocity = new b2Vec2(0, 0);
 
       if (state.up)    velocity.y = -VELOCITY;
@@ -224,4 +245,8 @@ var Box2dScene = (function (window, document, undefined) {
   };
 
   return Box2dScene;
-})(window, document);
+})();
+
+if (typeof module !== 'undefined') {
+   module.exports = Box2dScene;
+}
