@@ -166,11 +166,9 @@ var game = {
     initSocket: function (socket) {
       socket.on(net.ARENA_CREATE, function (arenaName) {
         if (lobby.arena.register(arenaName, socket)) {
-          console.log('arena created', arenaName);
           lobby.notify();
         }
         else {
-          console.log('arena denied');
           socket.emit(net.ARENA_DENY, 'Name alrady taken.');
         }
       });
@@ -223,12 +221,10 @@ var game = {
     initSocket: function (socket) {
       socket.on(net.USER_REGISTER, function (user) {
         if (lobby.user.register(user, socket)) {
-          console.log('user accepted', user.name);
           socket.emit(net.USER_ACCEPT);
           lobby.notify();
         }
         else {
-          console.log('user denied');
           socket.emit(net.USER_DENY, 'Name alrady taken.');
         }
       });

@@ -92,6 +92,7 @@ var Box2dScene = (function (undefined) {
       do {
         a = contact.GetFixtureA().GetBody().GetUserData();
         b = contact.GetFixtureB().GetBody().GetUserData();
+
         if (a && b && scene.onHitCallback) {
           if (a.type === 'sword' && b.type === 'body') {
             scene.onHitCallback(a.i, b.i);
@@ -161,10 +162,10 @@ var Box2dScene = (function (undefined) {
     this.world.DestroyBody(sword);
     this.world.DestroyBody(shields);
 
-    for (var i = index; i < body.length; ++i) {
-      this.bodies[i].SetUserData({type: 'body', i: i});
-      this.swords[i].SetUserData({type: 'sword', i: i});
-      this.shields[i].SetUserData({type: 'shield', i: i});
+    for (var i = 0; i < this.bodies.length; ++i) {
+      this.bodies[i].SetUserData({type: 'body', i: i+1});
+      this.swords[i].SetUserData({type: 'sword', i: i+1});
+      this.shields[i].SetUserData({type: 'shield', i: i+1});
     }
   }
 

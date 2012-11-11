@@ -52,6 +52,9 @@ Arena.prototype.attach = function (user) {
 
     this.dudes[index] = dude;
 
+    // console.log('new');
+    // console.log(this.players);
+    // console.log(this.playersByIndex);
 
     this.count++;
 
@@ -69,10 +72,32 @@ Arena.prototype.detach = function (user) {
   var index = this.players[user.name].i;
 
   delete this.players[user.name];
-  delete this.playersByIndex[index];
+  // delete this.playersByIndex[index];
   this.stats.splice(index, 1);
   this.dudes.splice(index, 1);
+
   this.count--;
+  console.log(index);
+  scenes[this.name].removeDude(index);
+
+  // recalc index values
+  var i;
+  // console.log('before');
+  // console.log(this.players);
+  // console.log(this.playersByIndex);
+  this.playersByIndex = {};
+  for (var player in this.players) {
+    player = this.players[player];
+    i = player.i;
+    if (i > index) {
+      --i;
+      player.i = i;
+      this.playersByIndex[i] = player.name;
+    }
+  }
+  // console.log('after');
+  // console.log(this.players);
+  // console.log(this.playersByIndex);
 };
 
 Arena.prototype.update = function (inputs) {
