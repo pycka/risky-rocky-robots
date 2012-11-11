@@ -76,7 +76,7 @@ var lobby = {
         defender.deaths++;
 
         this.stats[attackerId].k++;
-        this.stats[defenderId].d--;
+        this.stats[defenderId].d++;
       }
     },
 
