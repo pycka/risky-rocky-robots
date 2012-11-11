@@ -22,19 +22,10 @@ var input = (function (window, document, undefined) {
     };
   }
 
-  function angle (state, canvas, dude) {
+  function mouse_position (state, canvas) {
     return function (event) {
-      event.preventDefault();
-
-      var dx, dy, dc, dir, sin;
-      dx = event.offsetX / canvas.scale - dude.x;
-      dy = event.offsetY / canvas.scale - dude.y;
-      dc = Math.sqrt(dx * dx + dy * dy);
-      dir = Math.asin(dy / dc) + Math.PI / 2;
-      if (dx < 0) {
-        dir = -dir;
-      }
-      state.dir = dir;
+      state.mouse_x = event.offsetX / canvas.scale;
+      state.mouse_y = event.offsetY / canvas.scale;
     };
   }
 
@@ -47,15 +38,16 @@ var input = (function (window, document, undefined) {
     };
   }
 
-  function input (canvas, dude) {
+  function input (canvas) {
     var state = {
-      dir:   0,
-      fight: false,
-      dodge: false,
-      up:    false,
-      down:  false,
-      left:  false,
-      right: false,
+      mouse_x: 320,
+      mouse_y: 240,
+      fight:   false,
+      dodge:   false,
+      up:      false,
+      down:    false,
+      left:    false,
+      right:   false,
     };
 
     window.onkeydown = alternator(state, true);
@@ -64,7 +56,7 @@ var input = (function (window, document, undefined) {
     canvas.onmousedown = mouse_action(state, true);
     canvas.onmouseup = mouse_action(state, false);
 
-    canvas.onmousemove = angle(state, canvas, dude);
+    canvas.onmousemove = mouse_position(state, canvas);
     canvas.oncontextmenu = function (event) { event.preventDefault(); };
 
     return state;
