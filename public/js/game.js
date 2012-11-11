@@ -84,10 +84,8 @@ var game = (function (net, user, input) {
       that.elAboutLink.addEventListener('click', that.about, false);
       that.elLobbyArenas.addEventListener('click', that.selectArena, false);
 
-      that.inputstate = input(document.getElementById('game'), {
-        x: 320,
-        y: 240
-      });
+      that.inputState = input(document.getElementById('game'));
+      console.log(that.inputState);
       that.show();
 
       conn.socket.on(net.common.LOBBY_UPDATE, that.update);
@@ -178,8 +176,6 @@ var game = (function (net, user, input) {
      * @private
      */
     inputPush: function inputPush() {
-      console.log('input push');
-      console.log(game.lobby.inputState);
       conn.socket.emit(net.common.INPUT_PUSH, game.lobby.inputState);
       inputPushTimer = setTimeout(inputPush, INPUT_PUSH_INTERVAL);
     },

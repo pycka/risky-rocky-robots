@@ -1,4 +1,5 @@
-var Dude = require('../public/js/Dude').Constructor;
+var Dude = require('../public/js/Dude');
+var Box2dScene = require('../public/js/Box2dScene');
 
 /**
  * @param {String} name
@@ -29,7 +30,7 @@ Arena.prototype.attach = function (user) {
     var dude = new Dude(user.color, dx, dy, 0);
 
     user.arena = this;
-    this.players[user.name] = user;
+    this.players[user.name] = true;
     this.dudes[user.name] = dude;
     this.count++;
 

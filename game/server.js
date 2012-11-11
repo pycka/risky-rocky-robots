@@ -135,8 +135,6 @@ var game = {
       socket.on(net.INPUT_PUSH, function (input) {
         var user = lobby.getUserBySocket(socket);
         if (user) {
-          console.log(user.name);
-          console.log(user.input);
           user.input = input;
         }
       });
@@ -146,6 +144,7 @@ var game = {
   net: {
     broadcast: function (ev, data) {
       var users = lobby.usersByName;
+
       for (var user in users) {
         users[user].socket.emit(ev, data);
       }

@@ -4,7 +4,7 @@ var Dude = (function (undefined) {
     this.color = color;
     this.x = x;
     this.y = y;
-    this.dir = dir;
+    this.dir = dir || 0;
     this.sword = 0;
     this.shield = 0;
   }
@@ -80,5 +80,5 @@ var Dude = (function (undefined) {
 })();
 
 if (typeof module !== 'undefined') {
-  module.exports.Constructor = Dude;
+  module.exports = Dude;
 }
