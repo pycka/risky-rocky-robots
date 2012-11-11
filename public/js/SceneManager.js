@@ -91,7 +91,7 @@ var SceneManager = (function (window, document, undefined) {
   }
 
   SceneManager.prototype.drawBackground = function () {
-    this.context.fillStyle = '#ddd'
+    this.context.fillStyle = '#040';
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
   };
 
