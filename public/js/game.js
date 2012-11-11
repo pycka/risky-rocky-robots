@@ -9,8 +9,8 @@ var game = (function (net, user, input) {
     Right MB: defend\n\
     TAB: toggle lobby\n\
     ESC: exit arena\n\
-    \n\
-    PS use Chrome browser';
+    \n\n\
+    Best used with Chrome or Firefox browser';
   var INPUT_PUSH_INTERVAL = 30;
 
   var game = {};
