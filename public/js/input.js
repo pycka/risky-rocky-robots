@@ -6,7 +6,7 @@ var input = (function (window, document, undefined) {
       case 65: return 'left';
       case 83: return 'down';
       case 68: return 'right';
-      case 27: game.lobby.hide(); return null;
+      case 27: game.lobby.exitArena(); return null;
     }
   }
 

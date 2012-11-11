@@ -248,6 +248,17 @@ function onClientConnect (socket) {
   });
 }
 
+var default_input = {
+  mouse_x: 320,
+  mouse_y: 240,
+  fight:   false,
+  dodge:   false,
+  up:      false,
+  down:    false,
+  left:    false,
+  right:   false,
+};
+
 function updateArenas () {
   var inputs, input, arena, updates, name, player_name;
   for (name in lobby.arenas) {
@@ -256,16 +267,7 @@ function updateArenas () {
 
     for (player_name in arena.players) {
       inputs[arena.players[player_name].i] =
-        lobby.usersByName[player_name].input || {
-          mouse_x: 320,
-          mouse_y: 240,
-          fight:   false,
-          dodge:   false,
-          up:      false,
-          down:    false,
-          left:    false,
-          right:   false,
-        };
+        lobby.usersByName[player_name].input || default_input;
     }
 
     updates = arena.update(inputs);
