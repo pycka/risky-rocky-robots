@@ -66,6 +66,7 @@ var SceneManager = (function (window, document, undefined) {
     if (!this.debug) {
       this.drawBackground();
     }
+    this.drawCredits();
     this.drawDudes();
     this.drawScores();
   };
@@ -102,6 +103,12 @@ var SceneManager = (function (window, document, undefined) {
     }
   };
 
+  SceneManager.prototype.drawCredits = function () {
+    this.context.font = 'normal 12px sans-serif';
+    this.context.fillStyle = '#777';
+    this.context.fillText('By szywon & pycka 2012. Press Esc to exit arena.', 10, 470);
+  }
+
   SceneManager.prototype.drawScores = function () {
     var score, text;
     this.context.save();
@@ -119,3 +126,4 @@ var SceneManager = (function (window, document, undefined) {
 
   return SceneManager;
 })(window, document);
+g
