@@ -1,9 +1,12 @@
-var game = (function (net, user) {
+var game = (function (net, user, input) {
 
   var TEXT_ABOUT = 'About text';
+  var INPUT_PUSH_INTERVAL = 30;
 
   var game = {};
   var conn = net.connection;
+  var inputPushTimer = 0;
+  var inputPushOn = false;
 
   /**
    * Start init process. Establish connection. Called manually.
@@ -144,6 +147,26 @@ var game = (function (net, user) {
       }
     },
 
+    startInputPush: function () {
+      if (inputPushOn === false) {
+        this.inputPushOn = true;
+        this.inputPush();
+      }
+    },
+
+    stopInputPush: function () {
+      inputPushOn = false;
+      inputPushTimer = clearTimeout(inputPushTimer);
+    },
+
+    /**
+     * @private
+     */
+    inputPush: function inputPush() {
+      conn.socket.emit(net.common.INPUT_PUSH, input);
+      inputPushTimer = setTimeout(inputPush, INPUT_PUSH_INTERVAL);
+    },
+
     /**
      * Used to display instructions.
      * @context {DOMElement}
@@ -166,6 +189,6 @@ var game = (function (net, user) {
   };
 
   return game;
-})(net, user);
+})(net, user, input);
 
 game.bootstrap();

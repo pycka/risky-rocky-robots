@@ -14,10 +14,8 @@
     ARENA_DENY:      'ar_deny',     // client <== server
     ARENA_ACCEPT:    'ar_accept',   // client <== server
     ARENA_EXIT:      'ar_exit',
+    INPUT_PUSH:      'in',
     SCENE_UPDATE:    'scene',
-    INPUT:           'in',
-    CHAT_UPDATE:     'ch_up',
-    CHAT_SAY:        'ch_say',
   };
 
   // Export for Node:
