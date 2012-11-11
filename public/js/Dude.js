@@ -4,7 +4,7 @@ var Dude = (function (window, undefined) {
     this.color = color;
     this.x = x;
     this.y = y;
-    this.dir = dir;
+    this.dir = dir || 0;
     this.sword = 0;
     this.shield = 0;
   }
