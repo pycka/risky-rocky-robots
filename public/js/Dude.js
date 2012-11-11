@@ -59,7 +59,7 @@ var Dude = (function (window, undefined) {
     context.fillStyle = '#7c5b2b'
     context.beginPath();
     context.moveTo(0, -30);
-    context.arcTo(-20, 0, 0, 30, 56);
+    context.arcTo(-20, 0, 0, 30, 54);
     context.lineTo(0, -30);
     context.fill();
     context.stroke();
