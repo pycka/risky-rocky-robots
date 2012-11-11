@@ -100,7 +100,7 @@ var Box2dScene = (function (undefined) {
             scene.onHitCallback(b.i, a.i);
           }
         }
-      } while (contact = contact.GetNext());
+      } while (false /*(contact = contact.GetNext())*/);
     };
   }
 

@@ -18,9 +18,11 @@ function Arena(name, user, hitCallback) {
   this.name = name;
   this.owner = user.name;
   this.players = {};
+  this.playersByIndex = {};
   this.dudes = [];
   this.count = 0;
   this.max = 4;
+  this.stats = [];
   scenes[name] = new Box2dScene;
   scenes[name].onHitCallback = _.bind(hitCallback, this);
 }
@@ -34,14 +36,23 @@ Arena.prototype.attach = function (user) {
     var dx = Math.random() * 640;
     var dy = Math.random() * 480;
     var dude = new Dude(user.color, dx, dy, 0);
+    var index = this.count;
 
     user.arena = this;
     this.players[user.name] = {
       name: user.name,
-      i: this.count
+      i: index
+    };
+    this.playersByIndex[index] = user.name;
+    this.stats[index] = {
+      name: user.name,
+      k: 0,
+      d: 0
     };
 
-    this.dudes[this.count] = dude;
+    this.dudes[index] = dude;
+
+
     this.count++;
 
     scenes[this.name].addDude(dude);
@@ -55,8 +66,12 @@ Arena.prototype.attach = function (user) {
 
 Arena.prototype.detach = function (user) {
   user.arena = null;
-  delete this.dudes[this.players[user.name].i];
+  var index = this.players[user.name].i;
+
   delete this.players[user.name];
+  delete this.playersByIndex[index];
+  delete this.stats[index];
+  delete this.dudes[index];
   this.count--;
 };
 
