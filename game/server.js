@@ -215,10 +215,6 @@ function updateArenas () {
     updates = arena.update(inputs);
 
     send_to_arena(arena, net.SCENE_UPDATE, updates);
-
-    // for (player_name in arena.players) {
-    //   lobby.usersByName[player_name].socket.emit(net.SCENE_UPDATE, updates);
-    // }
   }
 
   setTimeout(updateArenas, 15);

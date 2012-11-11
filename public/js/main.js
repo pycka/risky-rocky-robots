@@ -2,15 +2,15 @@
 //   var canvas = document.getElementById('game');
 
 //   var dudes = [
-//     new Dude('red', 280, 200, Math.PI * 3 / 4),
-//     new Dude('green', 280, 280, Math.PI * 9 / 4),
-//     new Dude('blue', 360, 280, -Math.PI * 9 / 4),
-//     new Dude('yellow', 360, 200, -Math.PI * 3 / 4)
+//     new Dude('red', 280, 200, 0),
+//     new Dude('green', 280, 280, 0),
+//     new Dude('blue', 360, 280, 0),
+//     new Dude('yellow', 360, 200, 0)
 //   ];
 
-//   var scene_manager = new SceneManager(canvas, dudes);
+//   var scene_manager = new SceneManager(canvas, dudes, canvas);
 
-//   var b2_scene = new Box2dScene(dudes);
+//   var b2_scene = new Box2dScene(dudes, canvas);
 
 //   var input_state = input(canvas);
 
@@ -20,6 +20,7 @@
 //     var updates = b2_scene.step();
 //     // serv -> clients[] : bcast updates
 //     scene_manager.update(updates);
+//     b2_scene.redraw();
 //     scene_manager.redraw();
 //     webkitRequestAnimationFrame(update);
 //   }

@@ -56,7 +56,9 @@ var SceneManager = (function (window, document, undefined) {
   };
 
   SceneManager.prototype.redraw = function () {
-    this.drawBackground();
+    if (!this.debug) {
+      this.drawBackground();
+    }
     this.drawDudes();
   };
 

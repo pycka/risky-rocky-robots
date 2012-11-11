@@ -14,7 +14,7 @@ var Box2dScene = (function (undefined) {
   var b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef;
   var b2PolygonShape     = Box2D.Collision.Shapes.b2PolygonShape;
 
-  var SCALE = 10;
+  var SCALE = 32;
   var VELOCITY = 180 / SCALE;
 
   var SWORD_MIN = -2.5 * Math.PI / 4;
@@ -22,63 +22,33 @@ var Box2dScene = (function (undefined) {
   var SHIELD_MIN = 0;
   var SHIELD_MAX = Math.PI / 2;
 
-  var body_verts = [
-    [-15, 10],
-    [15, 10],
-    [20, 3],
-    [20, -5],
-    [4, -16],
-    [-4, -16],
-    [-20, -5],
-    [-20, 3]
-  ];
+  var body_verts = {
+    w: 35, h: 20, x: 0, y: 0
+  };
 
-  var sword_verts = [
-    [0, 0],
-    [23, -5],
-    [76, -5],
-    [84, 8],
-    [23, 5],
-  ];
+  var sword_verts = {
+    w: 60, h: 16, x: 53, y: 0
+  };
 
-  var shield_verts = [
-    [-23, -30],
-    [-32, -10],
-    [-32, 10],
-    [-23, 30],
-    [-23, 5],
-    [0, 0],
-    [-23, -5]
-  ];
-
-  function polygon (verts) {
-    var vec;
-    var shape = new b2PolygonShape;
-
-    var converted = [];
-    for (var i = 0; i < verts.length; ++i) {
-      vec = new b2Vec2;
-      vec.Set(verts[i][0] / SCALE, verts[i][1] / SCALE);
-      converted.push(vec);
-    }
-
-    shape.SetAsArray(converted, converted.length);
-    return shape;
-  }
+  var shield_verts = {
+    w: 10, h: 60, x: -22, y: 0
+  };
 
   function create_body (world, dude, verts, density) {
     var fixture, body_def, body;
 
     fixture = new b2FixtureDef;
     fixture.density = density || 1;
-    fixture.friction = 0.5;
-    fixture.restitution = 0.2;
-    fixture.shape = polygon(verts);
+    fixture.friction = 0.1;
+    fixture.restitution = 0;
+    // fixture.shape = polygon(verts);
+    fixture.shape = new b2PolygonShape;
+    fixture.shape.SetAsBox(verts.w / SCALE / 2, verts.h / SCALE / 2);
 
     body_def = new b2BodyDef;
     body_def.type = b2Body.b2_dynamicBody;
-    body_def.position.x = dude.x / SCALE;
-    body_def.position.y = dude.y / SCALE;
+    body_def.position.x = (dude.x + verts.x) / SCALE;
+    body_def.position.y = (dude.y + verts.y) / SCALE;
     body_def.angle = dude.dir;
 
     body = world.CreateBody(body_def);
@@ -94,7 +64,7 @@ var Box2dScene = (function (undefined) {
     fixture = new b2FixtureDef;
     fixture.density = 1;
     fixture.friction = 0.5;
-    fixture.restitution = 0.2;
+    fixture.restitution = 0;
     fixture.shape = new b2PolygonShape;
     fixture.shape.SetAsBox(w/SCALE/2, h/SCALE/2);
 
@@ -109,9 +79,9 @@ var Box2dScene = (function (undefined) {
     return body;
   }
 
-  function create_joint (world, body, thing) {
+  function create_joint (world, body, thing1, thing2) {
     joint_def = new b2RevoluteJointDef;
-    joint_def.Initialize(body, thing, body.GetPosition());
+    joint_def.Initialize(thing1, thing2, body.GetPosition());
     return world.CreateJoint(joint_def);
   }
 
@@ -172,15 +142,16 @@ var Box2dScene = (function (undefined) {
     sword.SetUserData({type: 'sword', i: i});
     shield.SetUserData({type: 'shield', i: i});
 
-    create_joint(this.world, body, sword);
-    create_joint(this.world, body, shield);
+    create_joint(this.world, body, body, sword);
+    create_joint(this.world, body, body, shield);
+    create_joint(this.world, body, sword, shield);
   }
 
   Box2dScene.prototype.setup_drawing = function () {
     var dd = new b2DebugDraw;
     dd.SetSprite(this.context);
     dd.SetDrawScale(SCALE);
-    dd.SetFillAlpha(1);
+    dd.SetFillAlpha(0.4);
     dd.SetLineThickness(1.0);
     dd.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
     this.world.SetDebugDraw(dd);
@@ -251,8 +222,7 @@ var Box2dScene = (function (undefined) {
   };
 
   Box2dScene.prototype.step = function () {
-    this.world.Step(1/60, 20, 20);
-    this.world.DrawDebugData();
+    this.world.Step(1/60, 10, 10);
     this.world.ClearForces();
 
     var pos, body, values;
@@ -271,6 +241,10 @@ var Box2dScene = (function (undefined) {
 
     return bodies_update;
   };
+
+  Box2dScene.prototype.redraw = function () {
+    this.world.DrawDebugData();
+  }
 
   return Box2dScene;
 })();
