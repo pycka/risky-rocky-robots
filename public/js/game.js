@@ -1,7 +1,7 @@
 var game = (function (net, user, input) {
 
   var TEXT_ABOUT = 'About text';
-  var INPUT_PUSH_INTERVAL = 30;
+  var INPUT_PUSH_INTERVAL = 300;
 
   var game = {};
   var conn = net.connection;
@@ -55,6 +55,7 @@ var game = (function (net, user, input) {
     elLobbyStatus:  null,
     elAboutLink:    null,
     elLobbyArenas:  null,
+    inputState:     null,
 
     /**
      * @context {SocketNamespace}
@@ -65,7 +66,7 @@ var game = (function (net, user, input) {
       that.arenaRowTpl = _.template(
         '<tr>' +
         '<td><%- name %></td>' +
-        '<td><%- players %></td>' +
+        '<td><%- count %></td>' +
         '<td><%- max %></td>' +
         '</tr>'
       );
@@ -83,6 +84,10 @@ var game = (function (net, user, input) {
       that.elAboutLink.addEventListener('click', that.about, false);
       that.elLobbyArenas.addEventListener('click', that.selectArena, false);
 
+      that.inputstate = input(document.getElementById('game'), {
+        x: 320,
+        y: 240
+      });
       that.show();
 
       conn.socket.on(net.common.LOBBY_UPDATE, that.update);
@@ -133,6 +138,15 @@ var game = (function (net, user, input) {
 
     enterArena: function () {
       game.lobby.hide();
+      game.lobby.startInputPush();
+    },
+
+    /**
+     * @todo invocation
+     */
+    exitArena: function () {
+      game.lobby.stopInputPush();
+      game.lobby.show();
     },
 
     /**
@@ -148,6 +162,7 @@ var game = (function (net, user, input) {
     },
 
     startInputPush: function () {
+      console.log(inputPushOn);
       if (inputPushOn === false) {
         this.inputPushOn = true;
         this.inputPush();
@@ -163,7 +178,9 @@ var game = (function (net, user, input) {
      * @private
      */
     inputPush: function inputPush() {
-      conn.socket.emit(net.common.INPUT_PUSH, input);
+      console.log('input push');
+      console.log(game.lobby.inputState);
+      conn.socket.emit(net.common.INPUT_PUSH, game.lobby.inputState);
       inputPushTimer = setTimeout(inputPush, INPUT_PUSH_INTERVAL);
     },
 
@@ -191,4 +208,7 @@ var game = (function (net, user, input) {
   return game;
 })(net, user, input);
 
-game.bootstrap();
+window.addEventListener('load', function () {
+  game.bootstrap();
+}, false);
+

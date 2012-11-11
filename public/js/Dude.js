@@ -1,4 +1,4 @@
-var Dude = (function (window, undefined) {
+var Dude = (function (undefined) {
 
   function Dude (color, x, y, dir) {
     this.color = color;
@@ -77,4 +77,8 @@ var Dude = (function (window, undefined) {
   };
 
   return Dude;
-})(window);
+})();
+
+if (typeof module !== 'undefined') {
+  module.exports.Constructor = Dude;
+}

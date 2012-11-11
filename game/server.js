@@ -130,6 +130,19 @@ var game = {
     }
   },
 
+  input: {
+    initSocket: function (socket) {
+      socket.on(net.INPUT_PUSH, function (input) {
+        var user = lobby.getUserBySocket(socket);
+        if (user) {
+          console.log(user.name);
+          console.log(user.input);
+          user.input = input;
+        }
+      });
+    }
+  },
+
   net: {
     broadcast: function (ev, data) {
       var users = lobby.usersByName;
@@ -164,6 +177,7 @@ function onClientConnect (socket) {
   // bind essential listeners
   game.user.initSocket(socket);
   game.arena.initSocket(socket);
+  game.input.initSocket(socket);
   socket.on('disconnect', function () {
     lobby.user.unregisterBySocket(socket);
   });
