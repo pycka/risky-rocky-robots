@@ -10,8 +10,10 @@ var Box2dScene = (function (window, document, undefined) {
   var b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef;
   var b2PolygonShape     = Box2D.Collision.Shapes.b2PolygonShape;
 
-  var SCALE = 32;
-  var SWORD_MAX = - 3 * Math.PI / 4;
+  var SCALE = 10;
+  var VELOCITY = 60 / SCALE;
+
+  var SWORD_MAX = - 2.5 * Math.PI / 4;
   var SHIELD_MAX = Math.PI / 2;
 
   var body_verts = [
@@ -111,11 +113,14 @@ var Box2dScene = (function (window, document, undefined) {
     this.BeginContact = function (contact) {
       var a, b, sword_fixture;
       var sword_i, body_i;
-      // do {
+      do {
         a = contact.GetFixtureA().GetBody().GetUserData();
         b = contact.GetFixtureB().GetBody().GetUserData();
-        console.log(a, b);
-      // } while (contact = contact.GetNext());
+        if (a && b && ((a.type === 'sword' && b.type === 'body') ||
+                       (a.type === 'body'  && b.type === 'sword'))) {
+          console.log(a, b);
+        }
+      } while (contact = contact.GetNext());
     };
   }
 
@@ -130,10 +135,10 @@ var Box2dScene = (function (window, document, undefined) {
     this.swords = [];
     this.shields = [];
 
-    create_barrier(this.world, 320, 0, 640, 2);
-    create_barrier(this.world, 320, 480, 640, 2);
-    create_barrier(this.world, 0, 240, 2, 480);
-    create_barrier(this.world, 640, 240, 2, 480);
+    create_barrier(this.world, 320, 0, 640, 20);
+    create_barrier(this.world, 320, 480, 640, 20);
+    create_barrier(this.world, 0, 240, 20, 480);
+    create_barrier(this.world, 640, 240, 20, 480);
 
     for (var i = 0; i < dudes.length; ++i) {
       dude = dudes[i];
@@ -173,15 +178,18 @@ var Box2dScene = (function (window, document, undefined) {
     this.world.SetDebugDraw(dd);
   };
 
-  var VELOCITY = 3;
-
   Box2dScene.prototype.update = function (states) {
     var state, velocity;
     for (var i = 0; i < states.length; ++i) {
       state = states[i];
+      if (state.fight && state.dodge) {
+        state.fight = false;
+        state.dodge = false;
+      }
+
       this.bodies[i].SetAngle(state.dir);
-      this.swords[i].SetAngle(state.dir);
-      this.shields[i].SetAngle(state.dir);
+      this.swords[i].SetAngle(state.dir + state.fight * SWORD_MAX);
+      this.shields[i].SetAngle(state.dir + state.dodge * SHIELD_MAX);
       velocity = new b2Vec2(0, 0);
 
       if (state.up)    velocity.y = -VELOCITY;
