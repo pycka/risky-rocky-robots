@@ -135,9 +135,9 @@ var Box2dScene = (function (undefined) {
   }
 
   Box2dScene.prototype.addDude = function (dude) {
-    body = create_body(this.world, dude, body_verts);
-    sword = create_body(this.world, dude, sword_verts, 0.001);
-    shield = create_body(this.world, dude, shield_verts, 0.001);
+    var body = create_body(this.world, dude, body_verts);
+    var sword = create_body(this.world, dude, sword_verts, 0.001);
+    var shield = create_body(this.world, dude, shield_verts, 0.001);
 
     var i = this.bodies.push(body);
     this.swords.push(sword);
@@ -150,6 +150,22 @@ var Box2dScene = (function (undefined) {
     create_joint(this.world, body, body, sword);
     create_joint(this.world, body, body, shield);
     create_joint(this.world, body, sword, shield);
+  }
+
+  Box2dScene.prototype.removeDude = function (index) {
+    var body = this.bodies.splice(index, 1)[0];
+    var sword = this.swords.splice(index, 1)[0];
+    var shields = this.shields.splice(index, 1)[0];
+
+    this.world.DestroyBody(body);
+    this.world.DestroyBody(sword);
+    this.world.DestroyBody(shields);
+
+    for (var i = index; i < body.length; ++i) {
+      this.bodies[i].SetUserData({type: 'body', i: i});
+      this.swords[i].SetUserData({type: 'sword', i: i});
+      this.shields[i].SetUserData({type: 'shield', i: i});
+    }
   }
 
   Box2dScene.prototype.setup_drawing = function () {

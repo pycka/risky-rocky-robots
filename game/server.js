@@ -260,14 +260,16 @@ var default_input = {
 };
 
 function updateArenas () {
-  var inputs, input, arena, updates, name, player_name;
+  var inputs, input, arena, updates, name, player_name, player;
   for (name in lobby.arenas) {
     arena = lobby.arenas[name];
     inputs = [];
 
     for (player_name in arena.players) {
-      inputs[arena.players[player_name].i] =
-        lobby.usersByName[player_name].input || default_input;
+      player = lobby.usersByName[player_name];
+      if (player) {
+        inputs[arena.players[player_name].i] = player.input || default_input;
+      }
     }
 
     updates = arena.update(inputs);
