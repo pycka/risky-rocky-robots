@@ -17,7 +17,9 @@ var Box2dScene = (function (undefined) {
   var SCALE = 10;
   var VELOCITY = 180 / SCALE;
 
-  var SWORD_MAX = - 2.5 * Math.PI / 4;
+  var SWORD_MIN = -2.5 * Math.PI / 4;
+  var SWORD_MAX = 0;
+  var SHIELD_MIN = 0;
   var SHIELD_MAX = Math.PI / 2;
 
   var body_verts = [
@@ -64,11 +66,11 @@ var Box2dScene = (function (undefined) {
     return shape;
   }
 
-  function create_body (world, dude, verts) {
+  function create_body (world, dude, verts, density) {
     var fixture, body_def, body;
 
     fixture = new b2FixtureDef;
-    fixture.density = 1;
+    fixture.density = density || 1;
     fixture.friction = 0.5;
     fixture.restitution = 0.2;
     fixture.shape = polygon(verts);
@@ -139,10 +141,10 @@ var Box2dScene = (function (undefined) {
     this.swords = [];
     this.shields = [];
 
-    create_barrier(this.world, 320, 0, 640, 20);
-    create_barrier(this.world, 320, 480, 640, 20);
-    create_barrier(this.world, 0, 240, 20, 480);
-    create_barrier(this.world, 640, 240, 20, 480);
+    create_barrier(this.world, 320, -250, 1140, 500);
+    create_barrier(this.world, 320, 730, 1140, 500);
+    create_barrier(this.world, -250, 240, 500, 980);
+    create_barrier(this.world, 890, 240, 500, 980);
 
     for (var i = 0; i < this.dudes.length; ++i) {
       this.addDude(this.dudes[i]);
@@ -159,8 +161,8 @@ var Box2dScene = (function (undefined) {
 
   Box2dScene.prototype.addDude = function (dude) {
     body = create_body(this.world, dude, body_verts);
-    sword = create_body(this.world, dude, sword_verts);
-    shield = create_body(this.world, dude, shield_verts);
+    sword = create_body(this.world, dude, sword_verts, 0.001);
+    shield = create_body(this.world, dude, shield_verts, 0.001);
 
     var i = this.bodies.push(body);
     this.swords.push(sword);
@@ -169,7 +171,6 @@ var Box2dScene = (function (undefined) {
     body.SetUserData({type: 'body', i: i});
     sword.SetUserData({type: 'sword', i: i});
     shield.SetUserData({type: 'shield', i: i});
-
 
     create_joint(this.world, body, sword);
     create_joint(this.world, body, shield);
@@ -197,10 +198,33 @@ var Box2dScene = (function (undefined) {
     return dir;
   }
 
+  function angularVelocity (sword, old_angle, angle, min, max, vel_forward, vel_back, state) {
+    var sword_angle = sword.GetAngle() - old_angle;
+    sword.SetAngle(angle + sword_angle);
+    if (state) {
+      if (sword_angle < max) {
+        sword.SetAngularVelocity(vel_forward);
+      } else {
+        sword.SetAngle(angle + max);
+        sword.SetAngularVelocity(0);
+      }
+    } else {
+      if (sword_angle > min) {
+        sword.SetAngularVelocity(-vel_back);
+      } else {
+        sword.SetAngle(angle + min);
+        sword.SetAngularVelocity(0);
+      }
+    }
+  }
+
   Box2dScene.prototype.update = function (states) {
-    var state, velocity, angle;
+    var state, sword, shield, body, velocity, angle, old_angle, sword_angle;
     for (var i = 0; i < states.length; ++i) {
       state = states[i];
+      sword = this.swords[i]
+      body = this.bodies[i];
+      shield = this.shields[i];
 
       // No action when both mouse button down
       if (state.fight && state.dodge) {
@@ -208,10 +232,13 @@ var Box2dScene = (function (undefined) {
         state.dodge = false;
       }
 
-      angle = this.angle(state, this.bodies[i].GetPosition());
-      this.bodies[i].SetAngle(angle);
-      this.swords[i].SetAngle(angle + state.fight * SWORD_MAX);
-      this.shields[i].SetAngle(angle + state.dodge * SHIELD_MAX);
+      old_angle = body.GetAngle();
+      angle = this.angle(state, body.GetPosition());
+      body.SetAngle(angle);
+
+      angularVelocity(shield, old_angle, angle, SHIELD_MIN, SHIELD_MAX, 15, 20, state.dodge);
+      angularVelocity(sword, old_angle, angle, SWORD_MIN, SWORD_MAX, 15, 20, !state.fight);
+
       velocity = new b2Vec2(0, 0);
 
       if (state.up)    velocity.y = -VELOCITY;

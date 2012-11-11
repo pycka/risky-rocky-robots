@@ -3,7 +3,7 @@ var game = (function (net, user, input) {
   var scene = new SceneManager(canvas);
 
   var TEXT_ABOUT = 'About text';
-  var INPUT_PUSH_INTERVAL = 300;
+  var INPUT_PUSH_INTERVAL = 30;
 
   var game = {};
   var conn = net.connection;

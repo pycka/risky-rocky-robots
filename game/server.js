@@ -193,14 +193,23 @@ function onClientConnect (socket) {
 }
 
 function updateArenas () {
-  var inputs, arena, updates, name, player_name;
+  var inputs, input, arena, updates, name, player_name;
   for (name in lobby.arenas) {
     arena = lobby.arenas[name];
     inputs = [];
 
     for (player_name in arena.players) {
       inputs[arena.players[player_name].i] =
-        lobby.usersByName[player_name].input;
+        lobby.usersByName[player_name].input || {
+          mouse_x: 320,
+          mouse_y: 240,
+          fight:   false,
+          dodge:   false,
+          up:      false,
+          down:    false,
+          left:    false,
+          right:   false,
+        };
     }
 
     updates = arena.update(inputs);
@@ -212,7 +221,7 @@ function updateArenas () {
     // }
   }
 
-  setTimeout(updateArenas, 50);
+  setTimeout(updateArenas, 15);
 }
 
 updateArenas();
