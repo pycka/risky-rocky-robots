@@ -14,8 +14,10 @@
     ARENA_DENY:      'ar_deny',     // client <== server
     ARENA_ACCEPT:    'ar_accept',   // client <== server
     ARENA_EXIT:      'ar_exit',
-    INPUT_PUSH:      'in',
-    SCENE_UPDATE:    'scene',
+
+    INPUT_PUSH:      'in',          // client ==> server
+    SCENE_UPDATE:    'scene',       // client <== server
+    RANK_UPDATE:     'rankup'
   };
 
   // Export for Node:

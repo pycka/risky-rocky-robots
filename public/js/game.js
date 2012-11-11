@@ -2,7 +2,15 @@ var game = (function (net, user, input) {
   var canvas = document.getElementById('game');
   var scene = new SceneManager(canvas);
 
-  var TEXT_ABOUT = 'About text';
+  var TEXT_ABOUT = '\
+    Keys:\n\
+    Movement: W,S,A,D\n\
+    Left MB:  attack\n\
+    Right MB: defend\n\
+    TAB: toggle lobby\n\
+    ESC: exit arena\n\
+    \n\
+    PS use Chrome browser';
   var INPUT_PUSH_INTERVAL = 30;
 
   var game = {};
@@ -23,10 +31,7 @@ var game = (function (net, user, input) {
 
     // great success!
     conn.socket.on('connect', this.bootstrapUser);
-    conn.socket.on(net.common.SCENE_UPDATE, function (updates) {
-      scene.update(updates);
-      scene.redraw();
-    });
+    conn.socket.on(net.common.SCENE_UPDATE, this.canvas.redraw);
   };
 
   /**
@@ -51,16 +56,25 @@ var game = (function (net, user, input) {
     }
   };
 
+  game.canvas = {
+    redraw: function (updates) {
+      scene.update(updates);
+      scene.redraw();
+    }
+  };
+
   /**
    *
    */
   game.lobby = {
     arenaRowTpl:    null,
+    rankRowTpl:     null,
     elLobby:        null,
     elPlayerInfo:   null,
     elLobbyStatus:  null,
     elAboutLink:    null,
     elLobbyArenas:  null,
+    elLobbyRanking: null,
     inputState:     null,
 
     /**
@@ -77,12 +91,23 @@ var game = (function (net, user, input) {
         '</tr>'
       );
 
+      that.rankRowTpl = _.template(
+        '<tr>' +
+        '<td><%- place %></td>' +
+        '<td><%- name %></td>' +
+        '<td><%- kills %></td>' +
+        '<td><%- deaths %></td>' +
+        '<td><%- ratio %></td>' +
+        '</tr>'
+      );
+
       that.elLobby = document.getElementById('lobby');
       that.elPlayerInfo = document.getElementById('lobby_player');
       that.elLobbyStatus = document.getElementById('lobby_status');
       that.elAboutLink = document.getElementById('lobby_about');
       that.elLobbyArenas = document.getElementById('lobby_arenas_tab');
-      that.elNewArenaLink = document.getElementById('lobby_arena_new')
+      that.elNewArenaLink = document.getElementById('lobby_arena_new');
+      that.elLobbyRanking = document.getElementById('lobby_rank');
       that.elNewArenaLink.addEventListener('click', that.createArena, false);
 
       that.elPlayerInfo.innerHTML = user.name;
@@ -91,13 +116,13 @@ var game = (function (net, user, input) {
       that.elLobbyArenas.addEventListener('click', that.selectArena, false);
 
       that.inputState = input(document.getElementById('game'));
-      console.log(that.inputState);
       that.show();
 
       conn.socket.on(net.common.LOBBY_UPDATE, that.update);
       conn.socket.on(net.common.ARENA_CREATE, that.alert);
       conn.socket.on(net.common.ARENA_DENY, that.alert);
       conn.socket.on(net.common.ARENA_ACCEPT, that.enterArena);
+      conn.socket.on(net.common.RANK_UPDATE, that.updateRanking);
     },
 
     show: function () {
@@ -128,6 +153,26 @@ var game = (function (net, user, input) {
       }
 
       this.elLobbyArenas.innerHTML = html;
+    },
+
+    /**
+     * @param   {Array} ranks
+     *   Ordered rank records
+     *
+     * @context {Undefined}
+     */
+    updateRanking: function (ranks) {
+      var that = game.lobby;
+      var html = '';
+      var tpl = that.rankRowTpl;
+      var i = 0;
+
+      ranks.forEach(function (row) {
+        row.place = ++i;
+        html += tpl(row);
+      });
+
+      that.elLobbyRanking.innerHTML = html;
     },
 
     /**

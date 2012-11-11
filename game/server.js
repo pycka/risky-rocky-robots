@@ -1,6 +1,11 @@
+// Modules:
+var _ = require('../public/js/lib/underscore.min');
 var net = require('../public/js/net/common');
 var Arena = require('./Arena').Constructor;
-var _ = require('../public/js/lib/underscore.min');
+var Timer = require('../public/js/lib/Timer');
+
+// Local variables:
+var rankTimer;
 
 var lobby = {
 
@@ -22,14 +27,13 @@ var lobby = {
     return this.usersBySid[socket.id];
   },
 
-
   // subspaces
   arena: {
 
     register: function (arenaName, socket) {
       if (!lobby.arenas[arenaName]) {
         var user = lobby.getUserBySocket(socket);
-        var arena = new Arena(arenaName, user.name);
+        var arena = new Arena(arenaName, user.name, lobby.rank.hitCallback);
 
         lobby.arenas[arenaName] = arena;
 
@@ -50,12 +54,41 @@ var lobby = {
     }
   },
 
+  rank: {
+    /**
+     * @context {Arena}
+     */
+    hitCallback: function (attackerId, defenderId) {
+      console.log(attackerId, defenderId);
+    },
+
+    update: function () {
+      var rank = _.values(lobby.usersByName);
+      rank = _.sortBy(lobby.usersByName, lobby.rank.comparator);
+
+      rank.forEach(function (user, index) {
+        user.ratio = user.kills / user.deaths || 0;
+        rank[index] = _.pick(user, 'name', 'kills', 'deaths', 'ratio');
+      });
+
+      game.net.broadcast(net.RANK_UPDATE, rank);
+    },
+
+    comparator: function (a, b) {
+      return a.ratio < b.ratio;
+    }
+  },
+
   // namespaces
   user: {
     register: function (user, socket) {
       if (!lobby.usersByName[user.name]) {
         user.socket = socket;
         user.arena = null;
+        // rank-related
+        user.kills = 0;
+        user.deaths = 0;
+        user.ratio = 0;
 
         lobby.usersByName[user.name] = user;
         lobby.usersBySid[user.socket.id] = user;
@@ -93,7 +126,7 @@ var lobby = {
     var state = this.state;
     state.userCount = Object.keys(this.usersByName).length;
     state.arenas = lobby.arenas;
-    console.log(state);
+
     game.net.broadcast(net.LOBBY_UPDATE, state);
   }
 };
@@ -125,11 +158,6 @@ var game = {
         var arena = lobby.getArena(arenaName);
 
         if (arena && arena.attach(user)) {
-          console.log('arena');
-          console.log(arena);
-          console.log(user.name);
-
-          // socket.emit(net.ARENA_ACCEPT, arena);
           send_to_arena(arena, net.ARENA_ACCEPT, arena);
         }
         else {
@@ -143,7 +171,6 @@ var game = {
     initSocket: function (socket) {
       socket.on(net.INPUT_PUSH, function (input) {
         var user = lobby.getUserBySocket(socket);
-        // console.log(input);
         if (user) {
           user.input = input;
         }
@@ -222,6 +249,9 @@ function updateArenas () {
 
 updateArenas();
 
+rankTimer = new Timer();
+rankTimer.every(5000, lobby.rank.update);
+rankTimer.start();
+
 // Exports:
 exports.onClientConnect = onClientConnect;
-
