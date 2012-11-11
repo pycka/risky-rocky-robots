@@ -53,8 +53,12 @@ var lobby = {
       return arena && arena.attach(user);
     },
 
-    exit: function (user, arena) {
-
+    /**
+     * Handles ARENA_EXIT and 'disconnect' events.
+     */
+    exit: function (user) {
+      var arena = user.arena;
+      send_to_arena(arena, net.ARENA_ACCEPT, arena);
     }
   },
 
@@ -125,7 +129,7 @@ var lobby = {
 
       if (user) {
         if (user.arena) {
-          user.arena.detach(user);
+          lobby.arena.exit(user);
         }
 
         delete lobby.usersBySid[socket.id];
@@ -180,6 +184,13 @@ var game = {
         }
         else {
           socket.emit(net.ARENA_DENY, 'Arena not found or full.');
+        }
+      });
+
+      socket.on(net.ARENA_EXIT, function () {
+        var user = lobby.getUserBySocket(socket);
+        if (user.arena) {
+          lobby.arena.exit(user);
         }
       });
     }

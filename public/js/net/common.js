@@ -13,7 +13,7 @@
     ARENA_ENTER:     'ar_enter',    // client ==> server
     ARENA_DENY:      'ar_deny',     // client <== server
     ARENA_ACCEPT:    'ar_accept',   // client <== server
-    ARENA_EXIT:      'ar_exit',
+    ARENA_EXIT:      'ar_exit',     // client ==> server @todo
 
     INPUT_PUSH:      'in',          // client ==> server
     SCENE_UPDATE:    'scene',       // client <== server
