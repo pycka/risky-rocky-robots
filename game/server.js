@@ -23,6 +23,10 @@ var lobby = {
     return this.arenas[name];
   },
 
+  getUserByName: function (name) {
+    return this.usersByName[name];
+  },
+
   getUserBySocket: function (socket) {
     return this.usersBySid[socket.id];
   },
@@ -59,7 +63,21 @@ var lobby = {
      * @context {Arena}
      */
     hitCallback: function (attackerId, defenderId) {
-      console.log(attackerId, defenderId);
+      --attackerId
+      var attackerName = this.playersByIndex[attackerId];
+      var attacker = lobby.getUserByName(attackerName);
+
+      --defenderId;
+      var defenderName = this.playersByIndex[defenderId];
+      var defender = lobby.getUserByName(defenderName);
+
+      if (attacker && defender) {
+        attacker.kills++;
+        defender.deaths++;
+
+        this.stats[attackerId].k++;
+        this.stats[defenderId].d--;
+      }
     },
 
     update: function () {
@@ -67,7 +85,7 @@ var lobby = {
       rank = _.sortBy(lobby.usersByName, lobby.rank.comparator);
 
       rank.forEach(function (user, index) {
-        user.ratio = user.kills / user.deaths || 0;
+        user.ratio = Math.round(user.kills / user.deaths || 0, 2);
         rank[index] = _.pick(user, 'name', 'kills', 'deaths', 'ratio');
       });
 
