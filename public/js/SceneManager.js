@@ -91,7 +91,7 @@ var SceneManager = (function (window, document, undefined) {
   }
 
   SceneManager.prototype.drawBackground = function () {
-    this.context.fillStyle = '#040';
+    this.context.fillStyle = '#242';
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
   };
 
@@ -106,7 +106,7 @@ var SceneManager = (function (window, document, undefined) {
   SceneManager.prototype.drawCredits = function () {
     this.context.font = 'normal 12px sans-serif';
     this.context.fillStyle = '#777';
-    this.context.fillText('By szywon & pycka 2012. Press Esc to exit arena.', 10, 470);
+    this.context.fillText('2012 szywon & pycka. Press Esc to exit arena.', 10, 470);
   }
 
   SceneManager.prototype.drawScores = function () {
@@ -126,4 +126,3 @@ var SceneManager = (function (window, document, undefined) {
 
   return SceneManager;
 })(window, document);
-g
