@@ -60,7 +60,7 @@ var game = (function (net, user) {
       var that = game.lobby;
 
       that.arenaRowTpl = _.template(
-        '<tr data-arena="<%- name %>">' +
+        '<tr>' +
         '<td><%- name %></td>' +
         '<td><%- players %></td>' +
         '<td><%- max %></td>' +
@@ -85,6 +85,7 @@ var game = (function (net, user) {
       conn.socket.on(net.common.LOBBY_UPDATE, that.update);
       conn.socket.on(net.common.ARENA_CREATE, that.alert);
       conn.socket.on(net.common.ARENA_DENY, that.alert);
+      conn.socket.on(net.common.ARENA_ACCEPT, that.enterArena);
     },
 
     show: function () {
@@ -127,13 +128,20 @@ var game = (function (net, user) {
       }
     },
 
+    enterArena: function () {
+      game.lobby.hide();
+    },
+
     /**
      * @param   {MouseEvent}
      * @context {DOMElement}
      */
     selectArena: function (event) {
-      console.log(event);
-      console.log(this);
+      var arenaName = event.target.textContent;
+
+      if (arenaName) {
+        conn.socket.emit(net.common.ARENA_ENTER, arenaName);
+      }
     },
 
     /**

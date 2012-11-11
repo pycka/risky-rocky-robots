@@ -36,10 +36,9 @@ var Dude = (function (window, undefined) {
     context.translate(0, 5);
   };
 
-  var sword_max = - 3 * Math.PI / 4;
 
   Dude.prototype.draw_sword = function (context) {
-    context.rotate(sword_max * this.sword);
+    context.rotate(this.sword);
     context.translate(23, -5);
     var gradient = context.createLinearGradient(0, 0, 0, 13);
     gradient.addColorStop(0, '#ddd');
@@ -54,10 +53,8 @@ var Dude = (function (window, undefined) {
     context.stroke();
   };
 
-  var shield_max = Math.PI / 2;
-
   Dude.prototype.draw_shield = function (context) {
-    context.rotate(shield_max * this.shield);
+    context.rotate(this.shield);
     context.translate(-23, 0);
     context.fillStyle = '#7c5b2b'
     context.beginPath();

@@ -103,7 +103,7 @@ var game = {
     initSocket: function (socket) {
       socket.on(net.ARENA_CREATE, function (arenaName) {
         if (lobby.arena.register(arenaName, socket)) {
-          console.log('arena accepted', arenaName);
+          console.log('arena created', arenaName);
           lobby.notify();
         }
         else {
@@ -117,6 +117,10 @@ var game = {
         var arena = lobby.getArena(arenaName);
 
         if (arena && arena.attach(user)) {
+          console.log('arena');
+          console.log(arena);
+          console.log(user.name);
+
           socket.emit(net.ARENA_ACCEPT);
         }
         else {
