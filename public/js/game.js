@@ -217,7 +217,6 @@ var game = (function (net, user, input) {
     },
 
     startInputPush: function () {
-      console.log(inputPushOn);
       if (inputPushOn === false) {
         this.inputPushOn = true;
         this.inputPush();

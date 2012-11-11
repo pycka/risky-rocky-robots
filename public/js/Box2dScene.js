@@ -15,7 +15,7 @@ var Box2dScene = (function (undefined) {
   var b2PolygonShape     = Box2D.Collision.Shapes.b2PolygonShape;
 
   var SCALE = 32;
-  var VELOCITY = 180 / SCALE;
+  var VELOCITY = 200 / SCALE;
 
   var SWORD_MIN = -2.5 * Math.PI / 4;
   var SWORD_MAX = 0;
@@ -230,8 +230,8 @@ var Box2dScene = (function (undefined) {
       angle = this.angle(state, body.GetPosition());
       body.SetAngle(angle);
 
-      angularVelocity(shield, old_angle, angle, SHIELD_MIN, SHIELD_MAX, 15, 20, state.dodge);
-      angularVelocity(sword, old_angle, angle, SWORD_MIN, SWORD_MAX, 15, 20, !state.fight);
+      angularVelocity(shield, old_angle, angle, SHIELD_MIN, SHIELD_MAX, 20, 25, state.dodge);
+      angularVelocity(sword, old_angle, angle, SWORD_MIN, SWORD_MAX, 20, 25, !state.fight);
 
       velocity = new b2Vec2(0, 0);
 

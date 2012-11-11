@@ -274,7 +274,7 @@ function updateArenas () {
     send_to_arena(arena, net.SCENE_UPDATE, updates);
   }
 
-  setTimeout(updateArenas, 15);
+  setTimeout(updateArenas, 25);
 }
 
 updateArenas();
