@@ -90,7 +90,7 @@ var lobby = {
       rank = _.sortBy(lobby.usersByName, lobby.rank.comparator);
 
       rank.forEach(function (user, index) {
-        user.ratio = Math.round(user.kills / user.deaths || 0, 2);
+        user.ratio = Math.round((user.kills / user.deaths || 0) * 100) / 100;
         rank[index] = _.pick(user, 'name', 'kills', 'deaths', 'ratio');
       });
 
