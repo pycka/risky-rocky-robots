@@ -58,6 +58,7 @@ var lobby = {
      */
     exit: function (user) {
       var arena = user.arena;
+      arena.detach(user);
       send_to_arena(arena, net.ARENA_ACCEPT, arena);
     }
   },
