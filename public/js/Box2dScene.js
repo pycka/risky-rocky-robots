@@ -15,7 +15,7 @@ var Box2dScene = (function (undefined) {
   var b2PolygonShape     = Box2D.Collision.Shapes.b2PolygonShape;
 
   var SCALE = 10;
-  var VELOCITY = 60 / SCALE;
+  var VELOCITY = 180 / SCALE;
 
   var SWORD_MAX = - 2.5 * Math.PI / 4;
   var SHIELD_MAX = Math.PI / 2;
@@ -144,8 +144,8 @@ var Box2dScene = (function (undefined) {
     create_barrier(this.world, 0, 240, 20, 480);
     create_barrier(this.world, 640, 240, 20, 480);
 
-    for (var i = 0; i < dudes.length; ++i) {
-      this.addDude(dudes[i]);
+    for (var i = 0; i < this.dudes.length; ++i) {
+      this.addDude(this.dudes[i]);
     }
 
     this.world.SetContactListener(new Detector(this));
@@ -162,13 +162,14 @@ var Box2dScene = (function (undefined) {
     sword = create_body(this.world, dude, sword_verts);
     shield = create_body(this.world, dude, shield_verts);
 
+    var i = this.bodies.push(body);
+    this.swords.push(sword);
+    this.shields.push(shield);
+
     body.SetUserData({type: 'body', i: i});
     sword.SetUserData({type: 'sword', i: i});
     shield.SetUserData({type: 'shield', i: i});
 
-    this.bodies.push(body);
-    this.swords.push(sword);
-    this.shields.push(shield);
 
     create_joint(this.world, body, sword);
     create_joint(this.world, body, shield);

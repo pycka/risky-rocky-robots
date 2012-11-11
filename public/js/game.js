@@ -1,4 +1,6 @@
 var game = (function (net, user, input) {
+  var canvas = document.getElementById('game');
+  var scene = new SceneManager(canvas);
 
   var TEXT_ABOUT = 'About text';
   var INPUT_PUSH_INTERVAL = 300;
@@ -21,6 +23,10 @@ var game = (function (net, user, input) {
 
     // great success!
     conn.socket.on('connect', this.bootstrapUser);
+    conn.socket.on(net.common.SCENE_UPDATE, function (updates) {
+      scene.update(updates);
+      scene.redraw();
+    });
   };
 
   /**
@@ -134,9 +140,13 @@ var game = (function (net, user, input) {
       }
     },
 
-    enterArena: function () {
+    enterArena: function (arena) {
       game.lobby.hide();
       game.lobby.startInputPush();
+      var dudes = arena.dudes.map(function (dude) {
+        return new Dude(dude.color, dude.x, dude.y);
+      });
+      scene.reset(dudes);
     },
 
     /**

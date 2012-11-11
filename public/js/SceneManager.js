@@ -51,6 +51,10 @@ var SceneManager = (function (window, document, undefined) {
     this.dudes.push(dude);
   };
 
+  SceneManager.prototype.reset = function (dudes) {
+    this.dudes = dudes;
+  };
+
   SceneManager.prototype.redraw = function () {
     this.drawBackground();
     this.drawDudes();

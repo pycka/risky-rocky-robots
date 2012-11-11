@@ -1,5 +1,6 @@
 var net = require('../public/js/net/common');
 var Arena = require('./Arena').Constructor;
+var _ = require('../public/js/lib/underscore.min');
 
 var lobby = {
 
@@ -92,10 +93,16 @@ var lobby = {
     var state = this.state;
     state.userCount = Object.keys(this.usersByName).length;
     state.arenas = lobby.arenas;
-
+    console.log(state);
     game.net.broadcast(net.LOBBY_UPDATE, state);
   }
 };
+
+function send_to_arena (arena, event, data) {
+  for (player_name in arena.players) {
+    lobby.usersByName[player_name].socket.emit(event, data);
+  }
+}
 
 var game = {
 
@@ -113,6 +120,7 @@ var game = {
       });
 
       socket.on(net.ARENA_ENTER, function (arenaName) {
+        var user_socket;
         var user = lobby.getUserBySocket(socket);
         var arena = lobby.getArena(arenaName);
 
@@ -121,7 +129,8 @@ var game = {
           console.log(arena);
           console.log(user.name);
 
-          socket.emit(net.ARENA_ACCEPT);
+          // socket.emit(net.ARENA_ACCEPT, arena);
+          send_to_arena(arena, net.ARENA_ACCEPT, arena);
         }
         else {
           socket.emit(net.ARENA_DENY, 'Arena not found or full.');
@@ -134,6 +143,7 @@ var game = {
     initSocket: function (socket) {
       socket.on(net.INPUT_PUSH, function (input) {
         var user = lobby.getUserBySocket(socket);
+        // console.log(input);
         if (user) {
           user.input = input;
         }
@@ -181,6 +191,31 @@ function onClientConnect (socket) {
     lobby.user.unregisterBySocket(socket);
   });
 }
+
+function updateArenas () {
+  var inputs, arena, updates, name, player_name;
+  for (name in lobby.arenas) {
+    arena = lobby.arenas[name];
+    inputs = [];
+
+    for (player_name in arena.players) {
+      inputs[arena.players[player_name].i] =
+        lobby.usersByName[player_name].input;
+    }
+
+    updates = arena.update(inputs);
+
+    send_to_arena(arena, net.SCENE_UPDATE, updates);
+
+    // for (player_name in arena.players) {
+    //   lobby.usersByName[player_name].socket.emit(net.SCENE_UPDATE, updates);
+    // }
+  }
+
+  setTimeout(updateArenas, 50);
+}
+
+updateArenas();
 
 // Exports:
 exports.onClientConnect = onClientConnect;
