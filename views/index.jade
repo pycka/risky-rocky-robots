@@ -6,19 +6,52 @@ html
       link(rel='stylesheet', href='/css/style.css')
 
   body
+
     div(id='lobby')
       div(class='win')
-        div(class='statusbar')
-          div(id='lobby_player')
-          div(id='lobby_status')
+        section(class='title')
+          h1
+            ='Mortal'
+            span(class='amp')=' @ '
+            ='Robots'
+
+        section(class='statusbar')
+          div(class='player')
+            ='Player name: '
+            span(id='lobby_player')
+          div(class='status')
+            ='Lobby (playing/all): '
+            span(id='lobby_status')
           a(id='lobby_about', href='#')= 'About'
 
-        div(id='lobby_arenas')
-          table(id='lobby_arenas_tab')
-        div(class='menu')
-          a(href='#', id='lobby_arena_new')= 'New arena'
+        section(class='arenas')
+          h2='Available arenas'
+          div(class='clip')
+            table
+              thead
+                tr
+                  td='Name'
+                  td='Currently playing'
+                  td='Max players'
+              tbody(id='lobby_arenas_tab')
+          div(class='options')
+            a(href='#', id='lobby_arena_new')= 'New arena'
+
+        section(class='rank')
+          h2='Ranking'
+          div(class='clip')
+            table(id='lobby_rank')
+              thead
+                tr
+                  td='Place'
+                  td='Name'
+                  td='Kills'
+                  td='Deaths'
+                  td='Ratio'
+              tbody(id='lobby_rank')
 
     canvas#game(width=640, height=480)
+
     script(src='/socket.io/socket.io.js')
     script(src='/js/lib/underscore.min.js')
     script(src='/js/lib/box2d.js')
