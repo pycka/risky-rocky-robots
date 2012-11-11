@@ -122,9 +122,13 @@ var Box2dScene = (function (undefined) {
       do {
         a = contact.GetFixtureA().GetBody().GetUserData();
         b = contact.GetFixtureB().GetBody().GetUserData();
-        if (a && b && ((a.type === 'sword' && b.type === 'body') ||
-                       (a.type === 'body'  && b.type === 'sword'))) {
-          console.log(a, b);
+        if (a && b && scene.onHitCallback) {
+          if (a.type === 'sword' && b.type === 'body') {
+            scene.onHitCallback(a.i, b.i);
+          }
+          else if (a.type === 'body'  && b.type === 'sword') {
+            scene.onHitCallback(b.i, a.i);
+          }
         }
       } while (contact = contact.GetNext());
     };
@@ -140,6 +144,7 @@ var Box2dScene = (function (undefined) {
     this.bodies = [];
     this.swords = [];
     this.shields = [];
+    this.onHitCallback = null;
 
     create_barrier(this.world, 320, -250, 1140, 500);
     create_barrier(this.world, 320, 730, 1140, 500);

@@ -1,3 +1,4 @@
+var _ = require('../public/js/lib/underscore.min');
 var Dude = require('../public/js/Dude');
 var Box2dScene = require('../public/js/Box2dScene');
 
@@ -13,14 +14,15 @@ var Box2dScene = require('../public/js/Box2dScene');
 
 var scenes = {};
 
-function Arena(name, user) {
+function Arena(name, user, hitCallback) {
   this.name = name;
   this.owner = user.name;
   this.players = {};
   this.dudes = [];
   this.count = 0;
-  this.max = 2;
+  this.max = 4;
   scenes[name] = new Box2dScene;
+  scenes[name].onHitCallback = _.bind(hitCallback, this);
 }
 
 Arena.prototype.attach = function (user) {
