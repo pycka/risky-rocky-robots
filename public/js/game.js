@@ -196,11 +196,12 @@ var game = (function (net, user, input) {
     },
 
     /**
-     * @todo invocation
+     *
      */
     exitArena: function () {
       game.lobby.stopInputPush();
       game.lobby.show();
+      conn.socket.emit(net.common.ARENA_EXIT);
     },
 
     /**
