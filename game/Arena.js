@@ -79,7 +79,10 @@ Arena.prototype.update = function (inputs) {
   var scene = scenes[this.name];
 
   scene.update(inputs);
-  return scene.step();
+  return {
+    coords: scene.step(),
+    stats: this.stats
+  };
 };
 
 exports.Constructor = Arena;

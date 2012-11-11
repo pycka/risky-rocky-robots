@@ -177,15 +177,16 @@ var Box2dScene = (function (undefined) {
   function angularVelocity (sword, old_angle, angle, min, max, vel_forward, vel_back, state) {
     var sword_angle = sword.GetAngle() - old_angle;
     sword.SetAngle(angle + sword_angle);
+
     if (state) {
-      if (sword_angle < max) {
+      if (sword_angle < max - 0.2) {
         sword.SetAngularVelocity(vel_forward);
       } else {
         sword.SetAngle(angle + max);
         sword.SetAngularVelocity(0);
       }
     } else {
-      if (sword_angle > min) {
+      if (sword_angle > min + 0.2) {
         sword.SetAngularVelocity(-vel_back);
       } else {
         sword.SetAngle(angle + min);

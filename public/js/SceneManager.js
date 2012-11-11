@@ -25,6 +25,13 @@ var SceneManager = (function (window, document, undefined) {
     this.dudes = dudes || [];
     this.debug = debug;
 
+    this.scores = [
+      // {name: 'A', k: 0, d: 0},
+      // {name: 'B', k: 0, d: 0},
+      // {name: 'C', k: 0, d: 0},
+      // {name: 'D', k: 0, d: 0}
+    ];
+
     this.context = canvas.getContext('2d');
     if (!this.context) {
       throw new Error("Can't get a 2d context.");
@@ -60,6 +67,7 @@ var SceneManager = (function (window, document, undefined) {
       this.drawBackground();
     }
     this.drawDudes();
+    this.drawScores();
   };
 
   SceneManager.prototype.update = function (updates) {
@@ -75,6 +83,12 @@ var SceneManager = (function (window, document, undefined) {
     }
   };
 
+  SceneManager.prototype.updateStats = function (scores) {
+    if (scores) {
+      this.scores = scores;
+    }
+  }
+
   SceneManager.prototype.drawBackground = function () {
     this.context.fillStyle = '#ddd'
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
@@ -87,6 +101,21 @@ var SceneManager = (function (window, document, undefined) {
       this.context.restore();
     }
   };
+
+  SceneManager.prototype.drawScores = function () {
+    var score, text;
+    this.context.save();
+    for (var i = 0; i < this.dudes.length && i < this.scores.length; ++i) {
+      score = this.scores[i];
+      text = score.name + '\tkills: ' + score.k + '\tdeaths: ' + score.d
+      this.context.translate(0, 25);
+      this.context.font = 'normal 20px sans-serif';
+      this.context.fillStyle = this.dudes[i].color;
+      this.context.fillText(text, 10, 0);
+      this.context.strokeText(text, 10, 0);
+    }
+    this.context.restore();
+  }
 
   return SceneManager;
 })(window, document);
