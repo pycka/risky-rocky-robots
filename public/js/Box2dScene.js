@@ -139,10 +139,10 @@ var Box2dScene = (function (undefined) {
     this.swords = [];
     this.shields = [];
 
-    create_barrier(this.world, 320, 0, 640, 20);
-    create_barrier(this.world, 320, 480, 640, 20);
-    create_barrier(this.world, 0, 240, 20, 480);
-    create_barrier(this.world, 640, 240, 20, 480);
+    create_barrier(this.world, 320, -250, 1140, 500);
+    create_barrier(this.world, 320, 730, 1140, 500);
+    create_barrier(this.world, -250, 240, 500, 980);
+    create_barrier(this.world, 890, 240, 500, 980);
 
     for (var i = 0; i < this.dudes.length; ++i) {
       this.addDude(this.dudes[i]);
