@@ -10,8 +10,7 @@
     "express": "3.0.1",
     "jade": "*",
     "stylus": "*",
-    "socket.io": "*",
-    "nib": "*"
+    "socket.io": "*"
   },
   "engines": {
     "node": "0.8.x"

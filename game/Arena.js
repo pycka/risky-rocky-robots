@@ -72,7 +72,6 @@ Arena.prototype.detach = function (user) {
   var index = this.players[user.name].i;
 
   delete this.players[user.name];
-  // delete this.playersByIndex[index];
   this.stats.splice(index, 1);
   this.dudes.splice(index, 1);
 
@@ -91,8 +90,8 @@ Arena.prototype.detach = function (user) {
     if (i > index) {
       --i;
       player.i = i;
-      this.playersByIndex[i] = player.name;
     }
+    this.playersByIndex[i] = player.name;
   }
   // console.log('after');
   // console.log(this.players);

@@ -68,6 +68,7 @@ var lobby = {
      * @context {Arena}
      */
     hitCallback: function (attackerId, defenderId) {
+      // console.log('hit', attackerId, defenderId);
       --attackerId
       var attackerName = this.playersByIndex[attackerId];
       var attacker = lobby.getUserByName(attackerName);
@@ -87,10 +88,17 @@ var lobby = {
 
     update: function () {
       var rank = _.values(lobby.usersByName);
-      rank = _.sortBy(lobby.usersByName, lobby.rank.comparator);
 
+      // calc ratio
+      rank.forEach(function (user) {
+        user.ratio = user.deaths ? user.kills / user.deaths : user.kills;
+        user.ratio = Math.round(user.ratio * 100) / 100;
+      });
+
+      rank = _.sortBy(rank, lobby.rank.comparator);
+
+      // pick properties for sending
       rank.forEach(function (user, index) {
-        user.ratio = Math.round((user.kills / user.deaths || 0) * 100) / 100;
         rank[index] = _.pick(user, 'name', 'kills', 'deaths', 'ratio');
       });
 
@@ -98,7 +106,7 @@ var lobby = {
     },
 
     comparator: function (a, b) {
-      return a.ratio < b.ratio;
+      return a.ratio > b.ratio;
     }
   },
 
@@ -180,6 +188,7 @@ var game = {
 
         if (arena && arena.attach(user)) {
           send_to_arena(arena, net.ARENA_ACCEPT, arena);
+          lobby.notify();
         }
         else {
           socket.emit(net.ARENA_DENY, 'Arena not found or full.');
@@ -190,6 +199,7 @@ var game = {
         var user = lobby.getUserBySocket(socket);
         if (user.arena) {
           lobby.arena.exit(user);
+          lobby.notify();
         }
       });
     }
@@ -234,7 +244,7 @@ var game = {
 };
 
 function onClientConnect (socket) {
-  console.log('Connected ', socket.id);
+  // console.log('Connected ', socket.id);
 
   // bind essential listeners
   game.user.initSocket(socket);
